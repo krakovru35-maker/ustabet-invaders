@@ -331,7 +331,7 @@
         <div class="logo">B</div>
         <div>
           <h1>Ustabet Invaders</h1>
-          <div class="sub">BETMARINO harfli zor mod</div>
+          <div class="sub">BET-MA-Rİ-NO arcade jingle</div>
         </div>
       </div>
 
@@ -542,33 +542,65 @@
     function startMusic() {
       stopMusic();
 
-      const melody = [
-        196, 196, 247, 196,
-        294, 247, 196, 165,
-        196, 247, 330, 294,
-        247, 196, 165, 147
+      /*
+        BET - MA - Rİ - NO jingle mantığı:
+        BET = güçlü kısa
+        MA = kısa
+        Rİ = yükselen kısa
+        NO = uzun kapanış
+
+        Bu ses gizli mesaj değil; açık arcade marka tınısı.
+      */
+
+      const motif = [
+        { note: 196, dur: 0.075, gap: 135, type: "square", volume: 0.017 },   // BET
+        { note: 247, dur: 0.075, gap: 135, type: "square", volume: 0.015 },   // MA
+        { note: 294, dur: 0.075, gap: 135, type: "square", volume: 0.015 },   // Rİ
+        { note: 392, dur: 0.170, gap: 310, type: "triangle", volume: 0.018 }, // NO
+
+        { note: 196, dur: 0.060, gap: 120, type: "square", volume: 0.014 },   // BET
+        { note: 247, dur: 0.060, gap: 120, type: "square", volume: 0.014 },   // MA
+        { note: 330, dur: 0.080, gap: 140, type: "square", volume: 0.015 },   // Rİ
+        { note: 294, dur: 0.150, gap: 360, type: "triangle", volume: 0.017 }  // NO
       ];
 
       musicStep = 0;
 
-      musicTimer = setInterval(function() {
-        if (!running || gameOver) return;
+      function musicLoop() {
+        if (!musicTimer) return;
 
-        const note = melody[musicStep % melody.length];
-        const bass = note / 2;
+        if (!running || gameOver) {
+          musicTimer = setTimeout(musicLoop, 300);
+          return;
+        }
 
-        playTone(bass, 0.08, "square", 0.014);
+        const item = motif[musicStep % motif.length];
 
-        if (musicStep % 2 === 0) {
-          playTone(note, 0.06, "triangle", 0.012);
+        playTone(item.note, item.dur, item.type, item.volume);
+        playTone(item.note / 2, item.dur + 0.03, "triangle", 0.007);
+
+        if (musicStep % 4 === 3) {
+          setTimeout(function() {
+            playTone(item.note * 1.5, 0.055, "triangle", 0.008);
+          }, 95);
+        }
+
+        if (musicStep % 8 === 7) {
+          setTimeout(function() {
+            playTone(98, 0.09, "square", 0.009);
+          }, 160);
         }
 
         musicStep++;
-      }, 190);
+        musicTimer = setTimeout(musicLoop, item.gap);
+      }
+
+      musicTimer = setTimeout(musicLoop, 80);
     }
 
     function stopMusic() {
       if (musicTimer) {
+        clearTimeout(musicTimer);
         clearInterval(musicTimer);
         musicTimer = null;
       }
