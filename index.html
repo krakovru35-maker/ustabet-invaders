@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Betmarino Invaders</title>
+  <title>Ustabet Invaders</title>
 
   <style>
     * {
@@ -330,7 +330,7 @@
       <div class="brand">
         <div class="logo">B</div>
         <div>
-          <h1>Betmarino Invaders</h1>
+          <h1>Ustabet Invaders</h1>
           <div class="sub">BETMARINO harfli zor mod</div>
         </div>
       </div>
@@ -363,7 +363,7 @@
 
         <div id="startScreen" class="startScreen">
           <div class="startBox">
-            <h2>Betmarino Invaders</h2>
+            <h2>Ustabet Invaders</h2>
             <p>
               Uzaylıları vur. Nadir düşen FreeSpin / FreeBet ödülünü
               geminle yakalarsan kazanırsın. Kaçırırsan ödül gider.
@@ -385,7 +385,7 @@
       </div>
 
       <div id="message" class="message">
-        Hazır. Mobilde parmağınla gemiyi sürükleyebilir veya alttaki butonları kullanabilirsin.
+        Hazır. Mobilde ekrana basılı tutarsan gemi o yöne gider ve sürekli ateş eder.
       </div>
 
       <div id="rewardList" class="rewardList"></div>
@@ -419,7 +419,9 @@
     let enemyShotTimer = 0;
     let fireHeld = false;
     let lastShotAt = 0;
+
     let pointerDown = false;
+    let touchTargetX = null;
 
     let player;
     let aliens = [];
@@ -596,6 +598,9 @@
       rewardsCaught = [];
       alienDir = 1;
       enemyShotTimer = 0;
+      fireHeld = false;
+      pointerDown = false;
+      touchTargetX = null;
 
       player = {
         x: W / 2 - 24,
@@ -609,7 +614,7 @@
 
       startScreen.style.display = "none";
       rewardListEl.innerHTML = "";
-      setMessage("Oyun başladı. Ödül düşerse geminle yakala.");
+      setMessage("Oyun başladı. Ekrana basılı tutarsan gemi o yöne gider ve sürekli ateş eder.");
       updateHud();
 
       startMusic();
@@ -685,11 +690,30 @@
     }
 
     function updatePlayer(dt) {
-      if (keys.left) {
+      let moveLeft = keys.left;
+      let moveRight = keys.right;
+
+      if (pointerDown && touchTargetX !== null) {
+        const playerCenter = player.x + player.w / 2;
+        const deadZone = 14;
+
+        moveLeft = false;
+        moveRight = false;
+
+        if (touchTargetX < playerCenter - deadZone) {
+          moveLeft = true;
+        }
+
+        if (touchTargetX > playerCenter + deadZone) {
+          moveRight = true;
+        }
+      }
+
+      if (moveLeft) {
         player.x -= player.speed * dt;
       }
 
-      if (keys.right) {
+      if (moveRight) {
         player.x += player.speed * dt;
       }
 
@@ -1209,26 +1233,57 @@
       };
     }
 
-    function movePlayerToPointer(event) {
+    function setTouchTarget(event) {
       if (!player || gameOver) return;
 
       const p = getCanvasPoint(event);
-      player.x = Math.max(6, Math.min(W - player.w - 6, p.x - player.w / 2));
+      touchTargetX = p.x;
+    }
+
+    function stopTouchControl() {
+      pointerDown = false;
+      touchTargetX = null;
+      fireHeld = false;
     }
 
     canvas.addEventListener("pointerdown", function(event) {
+      event.preventDefault();
+
+      if (!running || gameOver) return;
+
       pointerDown = true;
-      movePlayerToPointer(event);
+      fireHeld = true;
+
+      try {
+        canvas.setPointerCapture(event.pointerId);
+      } catch (e) {}
+
+      setTouchTarget(event);
       shoot();
     });
 
     canvas.addEventListener("pointermove", function(event) {
+      event.preventDefault();
+
       if (!pointerDown) return;
-      movePlayerToPointer(event);
+
+      setTouchTarget(event);
     });
 
-    window.addEventListener("pointerup", function() {
-      pointerDown = false;
+    canvas.addEventListener("pointerup", function(event) {
+      event.preventDefault();
+      stopTouchControl();
+    });
+
+    canvas.addEventListener("pointercancel", function(event) {
+      event.preventDefault();
+      stopTouchControl();
+    });
+
+    canvas.addEventListener("pointerleave", function() {
+      if (pointerDown) {
+        stopTouchControl();
+      }
     });
 
     window.addEventListener("keydown", function(event) {
