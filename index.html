@@ -11,7 +11,7 @@
 
   <script>
     (function () {
-      const GAME_VERSION = "maze-010-grid-fixed";
+      const GAME_VERSION = "maze-011-fixed-loop";
       const url = new URL(window.location.href);
 
       if (url.searchParams.get("v") !== GAME_VERSION) {
@@ -39,6 +39,7 @@
     * {
       box-sizing: border-box;
       user-select: none;
+      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -47,13 +48,14 @@
       margin: 0;
       width: 100%;
       min-height: 100%;
+      overflow-x: hidden;
+      overscroll-behavior: none;
       background:
         radial-gradient(circle at top, rgba(39, 142, 255, 0.34), transparent 38%),
         radial-gradient(circle at bottom, rgba(0, 255, 220, 0.10), transparent 35%),
         linear-gradient(180deg, #071a3d 0%, #020711 78%);
       font-family: Arial, sans-serif;
       color: #ffffff;
-      overflow-x: hidden;
     }
 
     body {
@@ -442,10 +444,21 @@
 
   <script>
     const CONFIG = {
-      SHEETS_WEBAPP_URL: "",
+      SHEETS_WEBAPP_URL: "https://script.google.com/macros/s/AKfycbwbopRtD6acLzL5HKZCyw5UVuXZB_6dHyXBsHalhzr-5fOFkAaaMu6gcFll6xmc-vnt/exec",
       GAME_NAME: "Marino Maze",
-      GAME_VERSION: "maze-010-grid-fixed"
+      GAME_VERSION: "maze-011-fixed-loop"
     };
+
+    if (window.Telegram && window.Telegram.WebApp) {
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+
+        if (typeof window.Telegram.WebApp.disableVerticalSwipes === "function") {
+          window.Telegram.WebApp.disableVerticalSwipes();
+        }
+      } catch (e) {}
+    }
 
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
@@ -498,7 +511,9 @@
     };
 
     let state = "idle";
+    let tickTimer = null;
     let lastTime = performance.now();
+
     let countdownText = "";
     let countdownActive = false;
 
@@ -569,7 +584,7 @@
       };
     }
 
-    function nearCenter(entity, threshold = 6) {
+    function nearCenter(entity, threshold = 7) {
       const c = nearestCenter(entity);
       return Math.abs(entity.x - c.x) <= threshold && Math.abs(entity.y - c.y) <= threshold;
     }
@@ -783,9 +798,9 @@
         x: p.x,
         y: p.y,
         r: 8,
-        speed: 2.05 + level * 0.03,
+        speed: 1.9 + level * 0.03,
         dir: DIRS.none,
-        nextDir: DIRS.none,
+        nextDir: DIRS.right,
         mouth: 0
       };
 
@@ -808,7 +823,7 @@
           color: g.color,
           name: g.name,
           dir: DIRS.none,
-          speed: 1.12 + level * 0.045,
+          speed: 1.02 + level * 0.04,
           eatenCooldown: 0
         };
       });
@@ -870,35 +885,67 @@
           countdownText = "";
           countdownActive = false;
 
-          player.dir = DIRS.none;
-          player.nextDir = DIRS.none;
+          player.dir = canMoveFromCenter(player, DIRS.right) ? DIRS.right : DIRS.none;
+          player.nextDir = player.dir;
 
           ghosts.forEach(g => {
+            snapCenter(g);
             g.dir = chooseGhostDirection(g, false);
+
+            if (g.dir.name === "none") {
+              const legal = getLegalDirections(g);
+              if (legal.length) {
+                g.dir = legal[Math.floor(Math.random() * legal.length)];
+              }
+            }
           });
 
           lastTime = performance.now();
           state = "playing";
 
           startMusic();
-          setMessage("Oyun başladı. İlk yönünü seç: mobilde kaydır, bilgisayarda ok tuşlarını kullan.");
+          setMessage("Oyun başladı. Mobilde kaydırarak yön ver, bilgisayarda ok tuşlarını kullan.");
         }
       }, 1000);
     }
 
-    function loop(now) {
-      const dt = Math.min(2, (now - lastTime) / 16.67);
-      lastTime = now;
-
-      if (state === "playing") {
-        updateGame(dt);
-      } else {
-        updateParticles(dt);
+    function startGameClock() {
+      if (tickTimer) {
+        clearInterval(tickTimer);
       }
 
-      draw();
-      requestAnimationFrame(loop);
+      lastTime = performance.now();
+
+      tickTimer = setInterval(() => {
+        const now = performance.now();
+
+        let dt = (now - lastTime) / 16.67;
+
+        if (!Number.isFinite(dt) || dt <= 0) {
+          dt = 1;
+        }
+
+        dt = Math.min(dt, 1.25);
+        lastTime = now;
+
+        if (state === "playing") {
+          updateGame(dt);
+        } else {
+          updateParticles(dt);
+        }
+
+        draw();
+      }, 1000 / 60);
     }
+
+    function resetClockAfterPause() {
+      lastTime = performance.now();
+    }
+
+    document.addEventListener("visibilitychange", resetClockAfterPause);
+    window.addEventListener("focus", resetClockAfterPause);
+    window.addEventListener("blur", resetClockAfterPause);
+    window.addEventListener("pageshow", resetClockAfterPause);
 
     function updateGame(dt) {
       updatePlayer(dt);
@@ -919,7 +966,7 @@
     function updatePlayer(dt) {
       if (!player) return;
 
-      if (nearCenter(player, 6)) {
+      if (nearCenter(player, 7)) {
         snapCenter(player);
 
         if (player.nextDir.name !== "none" && canMoveFromCenter(player, player.nextDir)) {
@@ -951,8 +998,8 @@
           const dist = Math.hypot(dx, dy);
 
           if (dist > 2) {
-            g.x += (dx / dist) * 2.25 * dt;
-            g.y += (dy / dist) * 2.25 * dt;
+            g.x += (dx / dist) * 2.15 * dt;
+            g.y += (dy / dist) * 2.15 * dt;
           } else {
             g.x = g.startX;
             g.y = g.startY;
@@ -964,10 +1011,10 @@
           continue;
         }
 
-        if (nearCenter(g, 6)) {
+        if (nearCenter(g, 7)) {
           snapCenter(g);
 
-          if (g.dir.name === "none" || !canMoveFromCenter(g, g.dir) || Math.random() < 0.28) {
+          if (g.dir.name === "none" || !canMoveFromCenter(g, g.dir) || Math.random() < 0.30) {
             g.dir = chooseGhostDirection(g, vulnerable);
           }
 
@@ -977,7 +1024,7 @@
         }
 
         if (g.dir.name !== "none") {
-          const speed = vulnerable ? 0.95 + level * 0.02 : g.speed;
+          const speed = vulnerable ? 0.82 + level * 0.02 : g.speed;
 
           g.x += g.dir.x * speed * dt;
           g.y += g.dir.y * speed * dt;
@@ -1002,7 +1049,7 @@
         options = getLegalDirections(g);
       }
 
-      if (Math.random() < 0.22) {
+      if (Math.random() < 0.20) {
         return options[Math.floor(Math.random() * options.length)];
       }
 
@@ -1176,6 +1223,9 @@
       powerModeUntil = 0;
       resetPositions();
 
+      player.dir = canMoveFromCenter(player, DIRS.right) ? DIRS.right : DIRS.none;
+      player.nextDir = player.dir;
+
       ghosts.forEach(g => {
         g.dir = chooseGhostDirection(g, false);
       });
@@ -1188,6 +1238,9 @@
       rewardDrops = [];
       resetPellets();
       resetPositions();
+
+      player.dir = canMoveFromCenter(player, DIRS.right) ? DIRS.right : DIRS.none;
+      player.nextDir = player.dir;
 
       ghosts.forEach(g => {
         g.dir = chooseGhostDirection(g, false);
@@ -1640,14 +1693,34 @@
       swipeActive = false;
     }, { passive: false });
 
+    document.addEventListener("touchmove", function(event) {
+      if (state === "playing") {
+        const target = event.target;
+
+        if (
+          target === canvas ||
+          target.classList.contains("ctrl") ||
+          target.closest(".gameWrap") ||
+          target.closest(".controls")
+        ) {
+          event.preventDefault();
+        }
+      }
+    }, { passive: false });
+
     window.addEventListener("beforeunload", function() {
       stopMusic();
+
+      if (tickTimer) {
+        clearInterval(tickTimer);
+      }
     });
 
     resetPellets();
     resetPositions();
     updateHud();
-    requestAnimationFrame(loop);
+    draw();
+    startGameClock();
   </script>
 </body>
 </html>
