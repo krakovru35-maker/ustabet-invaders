@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Ustabet Invaders</title>
+  <title>Marino Maze</title>
 
   <style>
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html,
@@ -17,8 +17,8 @@
       margin: 0;
       min-height: 100%;
       background:
-        radial-gradient(circle at top, rgba(28, 96, 180, .35), transparent 34%),
-        linear-gradient(180deg, #102b59 0%, #020711 72%);
+        radial-gradient(circle at top, rgba(40, 150, 255, .25), transparent 35%),
+        linear-gradient(180deg, #061b3d 0%, #020611 75%);
       color: #fff;
       font-family: Arial, sans-serif;
       overflow-x: hidden;
@@ -33,9 +33,6 @@
     .app {
       width: min(96vw, 620px);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
     .top {
@@ -43,7 +40,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 8px 2px 0;
+      margin-bottom: 10px;
     }
 
     .brand {
@@ -55,47 +52,46 @@
     .logo {
       width: 48px;
       height: 48px;
-      border-radius: 16px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #8eeaff, #4b8fff);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #80eaff, #347cff);
       color: #03101f;
       font-size: 26px;
       font-weight: 900;
-      box-shadow: 0 0 26px rgba(126, 231, 255, .55);
+      box-shadow: 0 0 28px rgba(80, 190, 255, .5);
     }
 
     h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 23px;
       line-height: 1.05;
-      color: #ffffff;
     }
 
     .sub {
       margin-top: 3px;
-      color: #8ecaff;
+      color: #9ed7ff;
       font-size: 12px;
+      font-weight: 700;
     }
 
     .pill {
-      border: 1px solid rgba(126, 231, 255, .65);
+      border: 1px solid rgba(126, 231, 255, .55);
       border-radius: 999px;
       padding: 9px 12px;
-      color: #d9f6ff;
+      background: rgba(0, 25, 55, .45);
+      color: #dff7ff;
       font-size: 12px;
       font-weight: 900;
-      background: rgba(0, 25, 55, .45);
       white-space: nowrap;
     }
 
     .panel {
-      position: relative;
       border: 1px solid rgba(67, 166, 255, .55);
       border-radius: 24px;
       padding: 12px;
-      background: rgba(0, 9, 25, .72);
-      box-shadow: 0 0 42px rgba(0, 132, 255, .22);
+      background: rgba(0, 9, 25, .75);
+      box-shadow: 0 0 45px rgba(0, 132, 255, .22);
       overflow: hidden;
     }
 
@@ -107,7 +103,7 @@
     }
 
     .stat {
-      min-height: 56px;
+      min-height: 55px;
       border: 1px solid rgba(118, 175, 255, .28);
       border-radius: 14px;
       padding: 9px 10px;
@@ -136,11 +132,11 @@
     }
 
     canvas {
+      display: block;
       width: 100%;
       height: auto;
-      display: block;
-      touch-action: none;
       background: #010711;
+      touch-action: none;
     }
 
     .startScreen {
@@ -149,26 +145,26 @@
       display: grid;
       place-items: center;
       padding: 20px;
-      background:
-        radial-gradient(circle at center, rgba(45, 145, 255, .18), rgba(0, 0, 0, .8) 70%),
-        rgba(0, 0, 0, .64);
       z-index: 5;
+      background:
+        radial-gradient(circle at center, rgba(45, 145, 255, .18), rgba(0, 0, 0, .82) 72%),
+        rgba(0, 0, 0, .68);
     }
 
     .startBox {
-      width: min(94%, 390px);
+      width: min(94%, 410px);
       text-align: center;
       border: 1px solid rgba(126, 231, 255, .42);
       border-radius: 22px;
       padding: 20px;
-      background: rgba(2, 10, 25, .92);
+      background: rgba(2, 10, 25, .94);
       box-shadow: 0 0 36px rgba(0, 140, 255, .24);
     }
 
     .startBox h2 {
       margin: 0 0 8px;
       color: #7ee7ff;
-      font-size: 28px;
+      font-size: 30px;
       text-shadow: 0 0 20px rgba(126, 231, 255, .75);
     }
 
@@ -218,27 +214,37 @@
     }
 
     .controls {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr 1fr;
-      gap: 8px;
       margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+        ". up ."
+        "left mid right"
+        ". down .";
+      gap: 7px;
+      max-width: 260px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .ctrl {
-      height: 56px;
-      font-size: 22px;
+      height: 48px;
       color: #dff7ff;
-      background: rgba(0, 40, 82, .75);
+      font-size: 20px;
+      background: rgba(0, 40, 82, .76);
       border: 1px solid rgba(65, 178, 255, .5);
       box-shadow: none;
     }
 
-    .fire {
-      color: #03101f;
-      font-size: 16px;
-      background: linear-gradient(135deg, #ffe99b, #ffbf43);
-      border: 0;
+    .up { grid-area: up; }
+    .left { grid-area: left; }
+    .mid {
+      grid-area: mid;
+      background: rgba(126, 231, 255, .12);
+      color: #7ee7ff;
     }
+    .right { grid-area: right; }
+    .down { grid-area: down; }
 
     .message {
       min-height: 42px;
@@ -273,17 +279,13 @@
         padding: 6px;
       }
 
-      .top {
-        padding-top: 4px;
-      }
-
       .logo {
         width: 44px;
         height: 44px;
       }
 
       h1 {
-        font-size: 19px;
+        font-size: 20px;
       }
 
       .pill {
@@ -312,14 +314,6 @@
       .stat span {
         font-size: 16px;
       }
-
-      .controls {
-        grid-template-columns: 1fr 1.2fr 1fr;
-      }
-
-      .ctrl {
-        height: 54px;
-      }
     }
   </style>
 </head>
@@ -328,14 +322,14 @@
   <div class="app">
     <div class="top">
       <div class="brand">
-        <div class="logo">B</div>
+        <div class="logo">M</div>
         <div>
-          <h1>Ustabet Invaders</h1>
-          <div class="sub">BET-MA-Rİ-NO arcade jingle</div>
+          <h1>Marino Maze</h1>
+          <div class="sub">Nostaljik labirent ödül avı</div>
         </div>
       </div>
 
-      <div class="pill">NADİR ÖDÜLLÜ</div>
+      <div class="pill">FS / FB AVCISI</div>
     </div>
 
     <div class="panel">
@@ -349,8 +343,8 @@
           <span id="lives">3</span>
         </div>
         <div class="stat">
-          <b>DALGA</b>
-          <span id="wave">1</span>
+          <b>LEVEL</b>
+          <span id="level">1</span>
         </div>
         <div class="stat">
           <b>ÖDÜL</b>
@@ -359,14 +353,14 @@
       </div>
 
       <div class="gameWrap">
-        <canvas id="game" width="520" height="650"></canvas>
+        <canvas id="game" width="532" height="588"></canvas>
 
         <div id="startScreen" class="startScreen">
           <div class="startBox">
-            <h2>Ustabet Invaders</h2>
+            <h2>Marino Maze</h2>
             <p>
-              Uzaylıları vur. Nadir düşen FreeSpin / FreeBet ödülünü
-              geminle yakalarsan kazanırsın. Kaçırırsan ödül gider.
+              Noktaları topla. Mavi güç kapsülünü alınca hayaletler yakalanabilir olur.
+              Hayalet yakalayınca nadiren FS / FB ödül kapsülü düşer. Kapsülü yakalarsan ödül sayılır.
             </p>
 
             <input id="siteUsername" type="text" placeholder="Site kullanıcı adını yaz" />
@@ -379,13 +373,15 @@
       </div>
 
       <div class="controls">
-        <button id="leftBtn" class="ctrl">◀</button>
-        <button id="fireBtn" class="ctrl fire">ATEŞ</button>
-        <button id="rightBtn" class="ctrl">▶</button>
+        <button class="ctrl up" id="upBtn">▲</button>
+        <button class="ctrl left" id="leftBtn">◀</button>
+        <button class="ctrl mid" id="midBtn">●</button>
+        <button class="ctrl right" id="rightBtn">▶</button>
+        <button class="ctrl down" id="downBtn">▼</button>
       </div>
 
       <div id="message" class="message">
-        Hazır. Mobilde ekrana basılı tutarsan gemi o yöne gider ve sürekli ateş eder.
+        Hazır. Mobilde kaydırarak veya alttaki yön tuşlarıyla oynayabilirsin.
       </div>
 
       <div id="rewardList" class="rewardList"></div>
@@ -396,50 +392,77 @@
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
-    const W = canvas.width;
-    const H = canvas.height;
-
     const scoreEl = document.getElementById("score");
     const livesEl = document.getElementById("lives");
-    const waveEl = document.getElementById("wave");
+    const levelEl = document.getElementById("level");
     const rewardCountEl = document.getElementById("rewardCount");
     const messageEl = document.getElementById("message");
     const rewardListEl = document.getElementById("rewardList");
     const startScreen = document.getElementById("startScreen");
 
+    const CELL = 28;
+    const COLS = 19;
+    const ROWS = 21;
+    const W = canvas.width;
+    const H = canvas.height;
+
+    const baseMaze = [
+      "1111111111111111111",
+      "1000000001000000001",
+      "1011011101011101101",
+      "1P100000000000001P1",
+      "1011010111110101101",
+      "1000010001000100001",
+      "1111011101011101111",
+      "1000000000000000001",
+      "1011110111110111101",
+      "1000000100010000001",
+      "1111100100010011111",
+      "1000000100010000001",
+      "1011110111110111101",
+      "1000000000000000001",
+      "1111011101011101111",
+      "1000010001000100001",
+      "1011010111110101101",
+      "1P100000000000001P1",
+      "1011011101011101101",
+      "1000000001000000001",
+      "1111111111111111111"
+    ];
+
+    const DIRS = {
+      none: { x: 0, y: 0, name: "none" },
+      up: { x: 0, y: -1, name: "up" },
+      down: { x: 0, y: 1, name: "down" },
+      left: { x: -1, y: 0, name: "left" },
+      right: { x: 1, y: 0, name: "right" }
+    };
+
     let username = "";
     let running = false;
     let gameOver = false;
+    let lastTime = 0;
+
     let score = 0;
     let lives = 3;
-    let wave = 1;
-    let lastTime = 0;
-    let alienDir = 1;
-    let alienSpeed = 0.22;
-    let enemyShotTimer = 0;
-    let fireHeld = false;
-    let lastShotAt = 0;
-
-    let pointerDown = false;
-    let touchTargetX = null;
+    let level = 1;
 
     let player;
-    let aliens = [];
-    let bullets = [];
-    let enemyBullets = [];
+    let ghosts = [];
+    let pelletGrid = [];
+    let powerModeUntil = 0;
     let rewardDrops = [];
-    let particles = [];
     let rewardsCaught = [];
-
-    const keys = {
-      left: false,
-      right: false
-    };
+    let particles = [];
 
     let audioCtx = null;
     let audioEnabled = false;
     let musicTimer = null;
     let musicStep = 0;
+
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeActive = false;
 
     function setMessage(text) {
       messageEl.textContent = text;
@@ -448,8 +471,113 @@
     function updateHud() {
       scoreEl.textContent = score;
       livesEl.textContent = lives;
-      waveEl.textContent = wave;
+      levelEl.textContent = level;
       rewardCountEl.textContent = rewardsCaught.length;
+    }
+
+    function centerOf(col, row) {
+      return {
+        x: col * CELL + CELL / 2,
+        y: row * CELL + CELL / 2
+      };
+    }
+
+    function getCellFromPixel(x, y) {
+      return {
+        col: Math.floor(x / CELL),
+        row: Math.floor(y / CELL)
+      };
+    }
+
+    function isWallCell(col, row) {
+      if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return true;
+      return baseMaze[row][col] === "1";
+    }
+
+    function isWallAtPixel(x, y) {
+      const c = getCellFromPixel(x, y);
+      return isWallCell(c.col, c.row);
+    }
+
+    function canOccupy(x, y, radius) {
+      const r = radius || 9;
+
+      return !(
+        isWallAtPixel(x - r, y - r) ||
+        isWallAtPixel(x + r, y - r) ||
+        isWallAtPixel(x - r, y + r) ||
+        isWallAtPixel(x + r, y + r)
+      );
+    }
+
+    function nearestCenter(entity) {
+      const col = Math.round((entity.x - CELL / 2) / CELL);
+      const row = Math.round((entity.y - CELL / 2) / CELL);
+
+      return {
+        col: col,
+        row: row,
+        x: col * CELL + CELL / 2,
+        y: row * CELL + CELL / 2
+      };
+    }
+
+    function nearCenter(entity, threshold) {
+      const c = nearestCenter(entity);
+      const t = threshold || 3;
+
+      return Math.abs(entity.x - c.x) <= t && Math.abs(entity.y - c.y) <= t;
+    }
+
+    function snapCenter(entity) {
+      const c = nearestCenter(entity);
+      entity.x = c.x;
+      entity.y = c.y;
+    }
+
+    function canMoveFromCenter(entity, dir) {
+      const c = nearestCenter(entity);
+      return !isWallCell(c.col + dir.x, c.row + dir.y);
+    }
+
+    function opposite(dir) {
+      if (dir.name === "up") return DIRS.down;
+      if (dir.name === "down") return DIRS.up;
+      if (dir.name === "left") return DIRS.right;
+      if (dir.name === "right") return DIRS.left;
+      return DIRS.none;
+    }
+
+    function resetPellets() {
+      pelletGrid = [];
+
+      for (let r = 0; r < ROWS; r++) {
+        pelletGrid[r] = [];
+
+        for (let c = 0; c < COLS; c++) {
+          const ch = baseMaze[r][c];
+
+          if (ch === "0") {
+            pelletGrid[r][c] = "dot";
+          } else if (ch === "P") {
+            pelletGrid[r][c] = "power";
+          } else {
+            pelletGrid[r][c] = null;
+          }
+        }
+      }
+    }
+
+    function remainingPellets() {
+      let count = 0;
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (pelletGrid[r][c]) count++;
+        }
+      }
+
+      return count;
     }
 
     function unlockAudio() {
@@ -477,7 +605,7 @@
       osc.type = type || "square";
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-      gain.gain.setValueAtTime(volume || 0.04, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume || 0.03, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
 
       osc.connect(gain);
@@ -487,55 +615,63 @@
       osc.stop(audioCtx.currentTime + duration);
     }
 
-    function soundShoot() {
-      playTone(880, 0.055, "square", 0.032);
-
-      setTimeout(function() {
-        playTone(1320, 0.035, "square", 0.022);
-      }, 35);
+    function soundDot() {
+      playTone(520, 0.035, "square", 0.016);
     }
 
-    function soundAlienHit() {
-      playTone(180, 0.08, "sawtooth", 0.043);
+    function soundPower() {
+      const notes = [330, 440, 660, 880];
 
-      setTimeout(function() {
-        playTone(90, 0.08, "square", 0.033);
-      }, 45);
+      notes.forEach(function(n, i) {
+        setTimeout(function() {
+          playTone(n, 0.07, "triangle", 0.035);
+        }, i * 70);
+      });
+    }
+
+    function soundGhostEat() {
+      const notes = [220, 330, 440];
+
+      notes.forEach(function(n, i) {
+        setTimeout(function() {
+          playTone(n, 0.08, "square", 0.035);
+        }, i * 80);
+      });
     }
 
     function soundRewardDrop() {
-      playTone(660, 0.08, "triangle", 0.04);
+      playTone(740, 0.08, "triangle", 0.04);
 
       setTimeout(function() {
-        playTone(990, 0.08, "triangle", 0.04);
+        playTone(980, 0.08, "triangle", 0.04);
       }, 90);
     }
 
     function soundRewardCatch() {
-      const notes = [523, 659, 784, 1046];
+      const notes = [523, 659, 784, 988, 1174];
 
       notes.forEach(function(n, i) {
         setTimeout(function() {
-          playTone(n, 0.09, "square", 0.043);
-        }, i * 85);
+          playTone(n, 0.085, "square", 0.043);
+        }, i * 75);
       });
     }
 
     function soundDamage() {
-      playTone(120, 0.12, "sawtooth", 0.052);
+      playTone(150, 0.12, "sawtooth", 0.05);
 
       setTimeout(function() {
-        playTone(70, 0.15, "sawtooth", 0.042);
+        playTone(80, 0.15, "sawtooth", 0.04);
       }, 80);
     }
 
     function soundGameOver() {
-      const notes = [330, 247, 196, 130];
+      const notes = [392, 294, 220, 146];
 
       notes.forEach(function(n, i) {
         setTimeout(function() {
-          playTone(n, 0.18, "square", 0.043);
-        }, i * 150);
+          playTone(n, 0.17, "square", 0.043);
+        }, i * 160);
       });
     }
 
@@ -543,25 +679,26 @@
       stopMusic();
 
       /*
-        BET - MA - Rİ - NO jingle mantığı:
-        BET = güçlü kısa
-        MA = kısa
-        Rİ = yükselen kısa
-        NO = uzun kapanış
-
-        Bu ses gizli mesaj değil; açık arcade marka tınısı.
+        Farklı müzik:
+        Bu Space Invaders'taki marka ritmi değil.
+        Marino Maze için daha karanlık, hızlı, labirent arcade tınısı.
       */
 
       const motif = [
-        { note: 196, dur: 0.075, gap: 135, type: "square", volume: 0.017 },   // BET
-        { note: 247, dur: 0.075, gap: 135, type: "square", volume: 0.015 },   // MA
-        { note: 294, dur: 0.075, gap: 135, type: "square", volume: 0.015 },   // Rİ
-        { note: 392, dur: 0.170, gap: 310, type: "triangle", volume: 0.018 }, // NO
+        { n: 196, d: 0.06, g: 115 },
+        { n: 247, d: 0.05, g: 95 },
+        { n: 294, d: 0.05, g: 95 },
+        { n: 247, d: 0.05, g: 120 },
 
-        { note: 196, dur: 0.060, gap: 120, type: "square", volume: 0.014 },   // BET
-        { note: 247, dur: 0.060, gap: 120, type: "square", volume: 0.014 },   // MA
-        { note: 330, dur: 0.080, gap: 140, type: "square", volume: 0.015 },   // Rİ
-        { note: 294, dur: 0.150, gap: 360, type: "triangle", volume: 0.017 }  // NO
+        { n: 220, d: 0.06, g: 105 },
+        { n: 277, d: 0.05, g: 95 },
+        { n: 330, d: 0.05, g: 95 },
+        { n: 277, d: 0.08, g: 170 },
+
+        { n: 196, d: 0.05, g: 95 },
+        { n: 262, d: 0.05, g: 95 },
+        { n: 330, d: 0.05, g: 95 },
+        { n: 392, d: 0.09, g: 210 }
       ];
 
       musicStep = 0;
@@ -576,26 +713,24 @@
 
         const item = motif[musicStep % motif.length];
 
-        playTone(item.note, item.dur, item.type, item.volume);
-        playTone(item.note / 2, item.dur + 0.03, "triangle", 0.007);
+        playTone(item.n, item.d, "square", 0.011);
+        playTone(item.n / 2, item.d + 0.025, "triangle", 0.006);
 
-        if (musicStep % 4 === 3) {
-          setTimeout(function() {
-            playTone(item.note * 1.5, 0.055, "triangle", 0.008);
-          }, 95);
+        if (powerModeUntil > Date.now()) {
+          playTone(item.n * 1.5, 0.045, "triangle", 0.008);
         }
 
         if (musicStep % 8 === 7) {
           setTimeout(function() {
-            playTone(98, 0.09, "square", 0.009);
-          }, 160);
+            playTone(98, 0.08, "square", 0.008);
+          }, 100);
         }
 
         musicStep++;
-        musicTimer = setTimeout(musicLoop, item.gap);
+        musicTimer = setTimeout(musicLoop, item.g);
       }
 
-      musicTimer = setTimeout(musicLoop, 80);
+      musicTimer = setTimeout(musicLoop, 120);
     }
 
     function stopMusic() {
@@ -620,33 +755,21 @@
 
       score = 0;
       lives = 3;
-      wave = 1;
-      gameOver = false;
+      level = 1;
       running = true;
-      bullets = [];
-      enemyBullets = [];
+      gameOver = false;
       rewardDrops = [];
-      particles = [];
       rewardsCaught = [];
-      alienDir = 1;
-      enemyShotTimer = 0;
-      fireHeld = false;
-      pointerDown = false;
-      touchTargetX = null;
+      particles = [];
+      powerModeUntil = 0;
 
-      player = {
-        x: W / 2 - 24,
-        y: H - 62,
-        w: 48,
-        h: 34,
-        speed: 5.2
-      };
-
-      createAliens();
+      resetPellets();
+      resetPositions();
 
       startScreen.style.display = "none";
       rewardListEl.innerHTML = "";
-      setMessage("Oyun başladı. Ekrana basılı tutarsan gemi o yöne gider ve sürekli ateş eder.");
+
+      setMessage("Oyun başladı. Mobilde kaydırarak yön ver. Mavi kapsülü alınca hayaletleri yakalayabilirsin.");
       updateHud();
 
       startMusic();
@@ -655,37 +778,42 @@
       requestAnimationFrame(loop);
     }
 
-    function createAliens() {
-      aliens = [];
+    function resetPositions() {
+      const p = centerOf(9, 19);
 
-      const letters = "BETMARINO";
-      const cols = 9;
-      const rows = Math.min(5, 3 + Math.floor((wave - 1) / 2));
-      const aW = 39;
-      const aH = 32;
-      const gapX = 12;
-      const gapY = 17;
-      const totalW = cols * aW + (cols - 1) * gapX;
-      const startX = (W - totalW) / 2;
-      const startY = 54;
+      player = {
+        x: p.x,
+        y: p.y,
+        r: 10,
+        speed: 2.25,
+        dir: DIRS.left,
+        nextDir: DIRS.left,
+        mouth: 0
+      };
 
-      let id = 0;
+      const spawn = [
+        { c: 9, r: 9, color: "#ff5c8a", name: "red" },
+        { c: 8, r: 11, color: "#60e7ff", name: "cyan" },
+        { c: 10, r: 11, color: "#ffb84a", name: "orange" },
+        { c: 9, r: 11, color: "#b06cff", name: "purple" }
+      ];
 
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          aliens.push({
-            id: "A" + wave + "_" + id++,
-            x: startX + c * (aW + gapX),
-            y: startY + r * (aH + gapY),
-            w: aW,
-            h: aH,
-            alive: true,
-            letter: letters[(c + r) % letters.length]
-          });
-        }
-      }
+      ghosts = spawn.map(function(g, i) {
+        const pos = centerOf(g.c, g.r);
 
-      alienSpeed = 0.20 + wave * 0.035;
+        return {
+          x: pos.x,
+          y: pos.y,
+          startX: pos.x,
+          startY: pos.y,
+          r: 10,
+          color: g.color,
+          name: g.name,
+          dir: i % 2 === 0 ? DIRS.left : DIRS.right,
+          speed: 1.55 + level * 0.08,
+          eatenCooldown: 0
+        };
+      });
     }
 
     function loop(now) {
@@ -707,239 +835,179 @@
       }
 
       updatePlayer(dt);
-      updateBullets(dt);
-      updateEnemyBullets(dt);
-      updateAliens(dt);
-      updateRewardDrops(dt);
+      updateGhosts(dt);
+      collectPellets();
+      updateRewards(dt);
       updateParticles(dt);
-      checkCollisions();
+      checkGhostCollision();
+      checkRewardCollision();
 
-      if (fireHeld) {
-        shoot();
+      if (remainingPellets() <= 0) {
+        nextLevel();
       }
 
       updateHud();
     }
 
     function updatePlayer(dt) {
-      let moveLeft = keys.left;
-      let moveRight = keys.right;
+      if (nearCenter(player, 3)) {
+        snapCenter(player);
 
-      if (pointerDown && touchTargetX !== null) {
-        const playerCenter = player.x + player.w / 2;
-        const deadZone = 14;
-
-        moveLeft = false;
-        moveRight = false;
-
-        if (touchTargetX < playerCenter - deadZone) {
-          moveLeft = true;
+        if (canMoveFromCenter(player, player.nextDir)) {
+          player.dir = player.nextDir;
         }
 
-        if (touchTargetX > playerCenter + deadZone) {
-          moveRight = true;
+        if (!canMoveFromCenter(player, player.dir)) {
+          player.dir = DIRS.none;
         }
       }
 
-      if (moveLeft) {
-        player.x -= player.speed * dt;
+      const nx = player.x + player.dir.x * player.speed * dt;
+      const ny = player.y + player.dir.y * player.speed * dt;
+
+      if (canOccupy(nx, ny, player.r - 1)) {
+        player.x = nx;
+        player.y = ny;
+      } else {
+        if (nearCenter(player, 5)) {
+          snapCenter(player);
+          player.dir = DIRS.none;
+        }
       }
 
-      if (moveRight) {
-        player.x += player.speed * dt;
-      }
-
-      player.x = Math.max(6, Math.min(W - player.w - 6, player.x));
+      player.mouth += 0.18 * dt;
     }
 
-    function shoot() {
-      const now = Date.now();
+    function updateGhosts(dt) {
+      const vulnerable = powerModeUntil > Date.now();
 
-      if (now - lastShotAt < 240) return;
+      for (const g of ghosts) {
+        if (g.eatenCooldown > 0) {
+          g.eatenCooldown -= 16.67 * dt;
 
-      lastShotAt = now;
+          const dx = g.startX - g.x;
+          const dy = g.startY - g.y;
+          const dist = Math.hypot(dx, dy);
 
-      bullets.push({
-        x: player.x + player.w / 2 - 2,
-        y: player.y - 12,
-        w: 4,
-        h: 14,
-        speed: 8.2
+          if (dist > 2) {
+            g.x += (dx / dist) * 2.6 * dt;
+            g.y += (dy / dist) * 2.6 * dt;
+          } else {
+            g.x = g.startX;
+            g.y = g.startY;
+          }
+
+          continue;
+        }
+
+        if (nearCenter(g, 3)) {
+          snapCenter(g);
+          g.dir = chooseGhostDirection(g, vulnerable);
+        }
+
+        const speed = vulnerable ? 1.28 + level * 0.03 : g.speed;
+        const nx = g.x + g.dir.x * speed * dt;
+        const ny = g.y + g.dir.y * speed * dt;
+
+        if (canOccupy(nx, ny, g.r - 1)) {
+          g.x = nx;
+          g.y = ny;
+        } else {
+          snapCenter(g);
+          g.dir = chooseGhostDirection(g, vulnerable);
+        }
+      }
+    }
+
+    function chooseGhostDirection(g, vulnerable) {
+      const options = [DIRS.up, DIRS.down, DIRS.left, DIRS.right].filter(function(d) {
+        return canMoveFromCenter(g, d);
       });
 
-      soundShoot();
-    }
+      if (options.length === 0) return DIRS.none;
 
-    function updateBullets(dt) {
-      for (const b of bullets) {
-        b.y -= b.speed * dt;
-      }
+      const reverse = opposite(g.dir);
+      let usable = options;
 
-      bullets = bullets.filter(function(b) {
-        return b.y + b.h > -10;
-      });
-    }
-
-    function updateEnemyBullets(dt) {
-      enemyShotTimer += 16.67 * dt;
-
-      const shotInterval = Math.max(520, 1200 - wave * 95);
-
-      if (enemyShotTimer >= shotInterval) {
-        enemyShotTimer = 0;
-
-        const alive = aliens.filter(function(a) {
-          return a.alive;
+      if (options.length > 1) {
+        usable = options.filter(function(d) {
+          return d.name !== reverse.name;
         });
-
-        if (alive.length > 0) {
-          const a = alive[Math.floor(Math.random() * alive.length)];
-
-          enemyBullets.push({
-            x: a.x + a.w / 2 - 3,
-            y: a.y + a.h + 4,
-            w: 6,
-            h: 15,
-            speed: 2.15 + wave * 0.12
-          });
-        }
       }
 
-      for (const b of enemyBullets) {
-        b.y += b.speed * dt;
+      if (Math.random() < 0.18) {
+        return usable[Math.floor(Math.random() * usable.length)];
       }
 
-      enemyBullets = enemyBullets.filter(function(b) {
-        return b.y < H + 20;
+      usable.sort(function(a, b) {
+        const ax = g.x + a.x * CELL;
+        const ay = g.y + a.y * CELL;
+        const bx = g.x + b.x * CELL;
+        const by = g.y + b.y * CELL;
+
+        const da = Math.hypot(ax - player.x, ay - player.y);
+        const db = Math.hypot(bx - player.x, by - player.y);
+
+        return vulnerable ? db - da : da - db;
       });
+
+      return usable[0];
     }
 
-    function updateAliens(dt) {
-      let hitEdge = false;
+    function collectPellets() {
+      const cell = getCellFromPixel(player.x, player.y);
+      const item = pelletGrid[cell.row] && pelletGrid[cell.row][cell.col];
 
-      for (const a of aliens) {
-        if (!a.alive) continue;
+      if (!item) return;
 
-        const nextX = a.x + alienDir * alienSpeed * dt;
+      pelletGrid[cell.row][cell.col] = null;
 
-        if (nextX < 10 || nextX + a.w > W - 10) {
-          hitEdge = true;
-          break;
-        }
+      if (item === "dot") {
+        score += 10;
+        soundDot();
       }
 
-      if (hitEdge) {
-        alienDir *= -1;
+      if (item === "power") {
+        score += 80;
+        powerModeUntil = Date.now() + Math.max(5200, 8200 - level * 450);
+        soundPower();
+        setMessage("Güç modu aktif! Hayaletleri yakala, nadir ödül kapsülü düşebilir.");
+      }
+    }
 
-        for (const a of aliens) {
-          if (!a.alive) continue;
+    function checkGhostCollision() {
+      const vulnerable = powerModeUntil > Date.now();
 
-          a.y += 16 + wave * 1.5;
+      for (const g of ghosts) {
+        if (g.eatenCooldown > 0) continue;
 
-          if (a.y + a.h >= player.y - 10) {
-            endGame("Uzaylılar çok yaklaştı. Oyun bitti.");
+        const dist = Math.hypot(g.x - player.x, g.y - player.y);
+
+        if (dist < player.r + g.r - 2) {
+          if (vulnerable) {
+            score += 220;
+            g.eatenCooldown = 1800;
+            explode(g.x, g.y, "#7ee7ff");
+            soundGhostEat();
+            maybeDropReward(g);
+          } else {
+            loseLife();
             return;
           }
         }
-      } else {
-        for (const a of aliens) {
-          if (!a.alive) continue;
-
-          a.x += alienDir * alienSpeed * dt;
-        }
-      }
-
-      const remaining = aliens.some(function(a) {
-        return a.alive;
-      });
-
-      if (!remaining) {
-        wave++;
-        setMessage("Dalga temizlendi. Yeni dalga geliyor.");
-        createAliens();
-        enemyBullets = [];
       }
     }
 
-    function updateRewardDrops(dt) {
-      for (const d of rewardDrops) {
-        d.y += d.speed * dt;
-        d.spin += 0.08 * dt;
-
-        if (d.y > H + 20) {
-          d.remove = true;
-          setMessage(d.label + " ödülü kaçtı. Yakalamadığın ödül sayılmaz.");
-        }
-      }
-
-      rewardDrops = rewardDrops.filter(function(d) {
-        return !d.remove;
-      });
-    }
-
-    function updateParticles(dt) {
-      for (const p of particles) {
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
-        p.life -= 0.025 * dt;
-      }
-
-      particles = particles.filter(function(p) {
-        return p.life > 0;
-      });
-    }
-
-    function checkCollisions() {
-      for (const b of bullets) {
-        for (const a of aliens) {
-          if (!a.alive) continue;
-
-          if (rectHit(b, a)) {
-            a.alive = false;
-            b.dead = true;
-            score += 40 + wave * 5;
-
-            explode(a.x + a.w / 2, a.y + a.h / 2, "#68c7ff");
-            soundAlienHit();
-            maybeDropReward(a);
-
-            break;
-          }
-        }
-      }
-
-      bullets = bullets.filter(function(b) {
-        return !b.dead;
-      });
-
-      for (const b of enemyBullets) {
-        if (rectHit(b, player)) {
-          b.dead = true;
-          loseLife();
-        }
-      }
-
-      enemyBullets = enemyBullets.filter(function(b) {
-        return !b.dead;
-      });
-
-      for (const d of rewardDrops) {
-        if (rectHit(d, player)) {
-          catchReward(d);
-        }
-      }
-
-      rewardDrops = rewardDrops.filter(function(d) {
-        return !d.remove;
-      });
-    }
-
-    function maybeDropReward(alien) {
+    function maybeDropReward(g) {
+      if (rewardsCaught.length >= 1) return;
       if (rewardDrops.length >= 1) return;
 
-      const chance = Math.min(0.075, 0.045 + wave * 0.004);
+      const chance = 0.12;
 
-      if (Math.random() > chance) return;
+      if (Math.random() > chance) {
+        setMessage("Hayalet yakalandı ama ödül düşmedi. Devam.");
+        return;
+      }
 
       const isFreebet = Math.random() < 0.42;
       const type = isFreebet ? "FREEBET" : "FREESPIN";
@@ -957,55 +1025,93 @@
       const label = amount + " " + type;
 
       rewardDrops.push({
-        id: "DROP-" + Date.now() + "-" + Math.floor(Math.random() * 9999),
+        id: "DROP-" + Date.now(),
+        x: g.x,
+        y: g.y,
+        r: 16,
         type: type,
         amount: amount,
         label: label,
-        x: alien.x + alien.w / 2 - 22,
-        y: alien.y + alien.h / 2,
-        w: 44,
-        h: 44,
-        speed: 1.05 + wave * 0.035,
-        spin: 0,
-        remove: false
+        ttl: 9000,
+        spin: 0
       });
 
       soundRewardDrop();
-      setMessage("Nadir ödül düştü: " + label + ". Yakala!");
+      setMessage("Ödül kapsülü düştü: " + label + ". Kaybolmadan yakala!");
     }
 
-    function catchReward(drop) {
-      drop.remove = true;
+    function updateRewards(dt) {
+      for (const r of rewardDrops) {
+        r.ttl -= 16.67 * dt;
+        r.spin += 0.1 * dt;
 
-      rewardsCaught.push({
-        type: drop.type,
-        amount: drop.amount,
-        label: drop.label,
-        time: new Date().toISOString()
+        if (r.ttl <= 0) {
+          r.dead = true;
+          setMessage(r.label + " ödülü kaçtı. Yakalanmayan ödül sayılmaz.");
+        }
+      }
+
+      rewardDrops = rewardDrops.filter(function(r) {
+        return !r.dead;
       });
+    }
 
-      score += 250;
-      soundRewardCatch();
-      explode(drop.x + drop.w / 2, drop.y + drop.h / 2, "#ffe28a");
+    function checkRewardCollision() {
+      for (const r of rewardDrops) {
+        const dist = Math.hypot(r.x - player.x, r.y - player.y);
 
-      const tag = document.createElement("div");
-      tag.className = "rewardTag";
-      tag.textContent = drop.label;
-      rewardListEl.appendChild(tag);
+        if (dist < r.r + player.r) {
+          r.dead = true;
 
-      setMessage("Ödül yakalandı: " + drop.label + ". Sonraki adımda bunu Sheets'e PENDING olarak yazdıracağız.");
+          rewardsCaught.push({
+            type: r.type,
+            amount: r.amount,
+            label: r.label,
+            username: username,
+            time: new Date().toISOString()
+          });
+
+          score += 500;
+          soundRewardCatch();
+          explode(r.x, r.y, "#ffe28a");
+
+          const tag = document.createElement("div");
+          tag.className = "rewardTag";
+          tag.textContent = r.label;
+          rewardListEl.appendChild(tag);
+
+          setMessage("Ödül yakalandı: " + r.label + ". Sonraki adımda bunu Sheets'e PENDING yazdıracağız.");
+        }
+      }
+
+      rewardDrops = rewardDrops.filter(function(r) {
+        return !r.dead;
+      });
     }
 
     function loseLife() {
       lives--;
       soundDamage();
-      explode(player.x + player.w / 2, player.y + player.h / 2, "#ff7a7a");
+      explode(player.x, player.y, "#ff7070");
 
       if (lives <= 0) {
         endGame("Can bitti. Oyun bitti.");
-      } else {
-        setMessage("Vuruldun. Kalan can: " + lives);
+        return;
       }
+
+      setMessage("Hayalete yakalandın. Kalan can: " + lives);
+      powerModeUntil = 0;
+      resetPositions();
+    }
+
+    function nextLevel() {
+      level++;
+      score += 700;
+      powerModeUntil = 0;
+      rewardDrops = [];
+      resetPellets();
+      resetPositions();
+      setMessage("Labirent temizlendi. Yeni level başladı.");
     }
 
     function endGame(text) {
@@ -1014,25 +1120,15 @@
       stopMusic();
       soundGameOver();
       updateHud();
-
-      setMessage(text + " Skor: " + score + ". Sayfayı yenileyip tekrar başlatabilirsin.");
+      setMessage(text + " Skor: " + score + ". Sayfayı yenileyip tekrar oynayabilirsin.");
 
       setTimeout(function() {
         draw();
       }, 80);
     }
 
-    function rectHit(a, b) {
-      return (
-        a.x < b.x + b.w &&
-        a.x + a.w > b.x &&
-        a.y < b.y + b.h &&
-        a.y + a.h > b.y
-      );
-    }
-
     function explode(x, y, color) {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 18; i++) {
         particles.push({
           x: x,
           y: y,
@@ -1044,14 +1140,26 @@
       }
     }
 
+    function updateParticles(dt) {
+      for (const p of particles) {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= 0.026 * dt;
+      }
+
+      particles = particles.filter(function(p) {
+        return p.life > 0;
+      });
+    }
+
     function draw() {
       ctx.clearRect(0, 0, W, H);
 
       drawBackground();
-      drawAliens();
-      drawBullets();
-      drawEnemyBullets();
-      drawRewardDrops();
+      drawMaze();
+      drawPellets();
+      drawRewards();
+      drawGhosts();
       drawPlayer();
       drawParticles();
 
@@ -1064,125 +1172,200 @@
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, "#020a18");
       g.addColorStop(1, "#00040b");
+
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
 
-      ctx.fillStyle = "rgba(255,255,255,.45)";
+      ctx.fillStyle = "rgba(255,255,255,.35)";
 
       for (let i = 0; i < 70; i++) {
-        const x = (i * 73 + wave * 17) % W;
-        const y = (i * 49 + Date.now() * 0.018) % H;
-        ctx.fillRect(x, y, 1.2, 1.2);
+        const x = (i * 71 + Date.now() * 0.012) % W;
+        const y = (i * 47 + Date.now() * 0.016) % H;
+        ctx.fillRect(x, y, 1.1, 1.1);
       }
     }
 
-    function drawAliens() {
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+    function drawMaze() {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (baseMaze[r][c] !== "1") continue;
 
-      for (const a of aliens) {
-        if (!a.alive) continue;
+          const x = c * CELL;
+          const y = r * CELL;
 
-        const pulse = Math.sin(Date.now() / 145 + a.x) * 2;
+          ctx.save();
 
-        ctx.save();
-        ctx.shadowColor = "#58a6ff";
-        ctx.shadowBlur = 18;
+          ctx.shadowColor = "#1ca8ff";
+          ctx.shadowBlur = 10;
+          ctx.fillStyle = "rgba(23, 89, 190, .52)";
+          roundRect(x + 3, y + 3, CELL - 6, CELL - 6, 8);
+          ctx.fill();
 
-        ctx.fillStyle = "rgba(31, 118, 255, .23)";
-        roundRect(a.x - 4, a.y - 4 + pulse, a.w + 8, a.h + 8, 10);
-        ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "rgba(126, 231, 255, .35)";
+          ctx.lineWidth = 1;
+          roundRect(x + 3.5, y + 3.5, CELL - 7, CELL - 7, 8);
+          ctx.stroke();
 
-        ctx.fillStyle = "rgba(126, 231, 255, .14)";
-        roundRect(a.x + 3, a.y + 3 + pulse, a.w - 6, a.h - 6, 8);
-        ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
 
-        ctx.shadowBlur = 14;
-        ctx.fillStyle = "#7edfff";
-        ctx.font = "900 21px Arial";
-        ctx.fillText(a.letter, a.x + a.w / 2, a.y + a.h / 2 + pulse + 1);
+    function drawPellets() {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const item = pelletGrid[r][c];
+          if (!item) continue;
 
-        ctx.restore();
+          const x = c * CELL + CELL / 2;
+          const y = r * CELL + CELL / 2;
+
+          ctx.save();
+
+          if (item === "dot") {
+            ctx.fillStyle = "rgba(255, 230, 150, .9)";
+            ctx.shadowColor = "#ffe28a";
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          if (item === "power") {
+            const pulse = 2 + Math.sin(Date.now() / 120) * 1.5;
+
+            ctx.fillStyle = "#7ee7ff";
+            ctx.shadowColor = "#7ee7ff";
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            ctx.arc(x, y, 8 + pulse, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#03101f";
+            ctx.font = "900 11px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("M", x, y + 1);
+          }
+
+          ctx.restore();
+        }
       }
     }
 
     function drawPlayer() {
       if (!player) return;
 
+      const mouthOpen = 0.22 + Math.abs(Math.sin(player.mouth)) * 0.28;
+      let angle = 0;
+
+      if (player.dir.name === "right") angle = 0;
+      if (player.dir.name === "down") angle = Math.PI / 2;
+      if (player.dir.name === "left") angle = Math.PI;
+      if (player.dir.name === "up") angle = -Math.PI / 2;
+
       ctx.save();
+      ctx.translate(player.x, player.y);
+      ctx.rotate(angle);
+
       ctx.shadowColor = "#ffe28a";
-      ctx.shadowBlur = 20;
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = "#ffcf4a";
 
-      const x = player.x;
-      const y = player.y;
-
-      const g = ctx.createLinearGradient(x, y, x, y + player.h);
-      g.addColorStop(0, "#fff3ba");
-      g.addColorStop(1, "#b58c2d");
-
-      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.moveTo(x + player.w / 2, y);
-      ctx.lineTo(x + player.w, y + player.h);
-      ctx.lineTo(x + player.w * 0.62, y + player.h - 8);
-      ctx.lineTo(x + player.w * 0.5, y + player.h - 2);
-      ctx.lineTo(x + player.w * 0.38, y + player.h - 8);
-      ctx.lineTo(x, y + player.h);
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, player.r + 2, mouthOpen, Math.PI * 2 - mouthOpen);
       ctx.closePath();
       ctx.fill();
 
       ctx.shadowBlur = 0;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(x + player.w / 2 - 2, y + 12, 4, 8);
+      ctx.fillStyle = "#03101f";
+      ctx.font = "900 10px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.rotate(-angle);
+      ctx.fillText("M", 0, 1);
 
       ctx.restore();
     }
 
-    function drawBullets() {
-      ctx.save();
-      ctx.shadowColor = "#8eeaff";
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = "#dff7ff";
+    function drawGhosts() {
+      const vulnerable = powerModeUntil > Date.now();
 
-      for (const b of bullets) {
-        roundRect(b.x, b.y, b.w, b.h, 3);
-        ctx.fill();
-      }
-
-      ctx.restore();
-    }
-
-    function drawEnemyBullets() {
-      ctx.save();
-      ctx.shadowColor = "#ff7a7a";
-      ctx.shadowBlur = 10;
-      ctx.fillStyle = "#ffbd45";
-
-      for (const b of enemyBullets) {
-        roundRect(b.x, b.y, b.w, b.h, 4);
-        ctx.fill();
-      }
-
-      ctx.restore();
-    }
-
-    function drawRewardDrops() {
-      for (const d of rewardDrops) {
-        const cx = d.x + d.w / 2;
-        const cy = d.y + d.h / 2;
-        const pulse = Math.sin(Date.now() / 90) * 2;
+      for (const g of ghosts) {
+        if (g.eatenCooldown > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(g.x, g.y, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          continue;
+        }
 
         ctx.save();
 
-        ctx.translate(cx, cy + pulse);
-        ctx.rotate(Math.sin(d.spin) * 0.12);
+        const color = vulnerable ? "#2f74ff" : g.color;
+        const pulse = Math.sin(Date.now() / 120 + g.x) * 1.5;
 
-        ctx.shadowColor = d.type === "FREEBET" ? "#ffe28a" : "#7ee7ff";
+        ctx.translate(g.x, g.y + pulse);
+
+        ctx.shadowColor = color;
+        ctx.shadowBlur = vulnerable ? 24 : 16;
+        ctx.fillStyle = color;
+
+        ctx.beginPath();
+        ctx.arc(0, -2, g.r + 2, Math.PI, 0);
+        ctx.lineTo(g.r + 2, g.r + 4);
+        ctx.lineTo(g.r / 2, g.r);
+        ctx.lineTo(0, g.r + 4);
+        ctx.lineTo(-g.r / 2, g.r);
+        ctx.lineTo(-g.r - 2, g.r + 4);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(-4, -3, 3, 0, Math.PI * 2);
+        ctx.arc(5, -3, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#03101f";
+        ctx.beginPath();
+        ctx.arc(-3, -3, 1.4, 0, Math.PI * 2);
+        ctx.arc(6, -3, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (vulnerable) {
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "900 8px Arial";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("YAKALA", 0, 14);
+        }
+
+        ctx.restore();
+      }
+    }
+
+    function drawRewards() {
+      for (const r of rewardDrops) {
+        ctx.save();
+
+        const pulse = Math.sin(Date.now() / 100) * 2;
+
+        ctx.translate(r.x, r.y + pulse);
+        ctx.rotate(Math.sin(r.spin) * 0.25);
+
+        ctx.shadowColor = r.type === "FREEBET" ? "#ffe28a" : "#7ee7ff";
         ctx.shadowBlur = 24;
 
-        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 24);
+        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 22);
 
-        if (d.type === "FREEBET") {
+        if (r.type === "FREEBET") {
           gradient.addColorStop(0, "#fff3ba");
           gradient.addColorStop(1, "#ffb93d");
         } else {
@@ -1192,18 +1375,18 @@
 
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(0, 0, 21, 0, Math.PI * 2);
+        ctx.arc(0, 0, r.r, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.shadowBlur = 0;
         ctx.fillStyle = "#03101f";
-        ctx.font = "900 13px Arial";
+        ctx.font = "900 12px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(d.type === "FREEBET" ? "FB" : "FS", 0, -2);
+        ctx.fillText(r.type === "FREEBET" ? "FB" : "FS", 0, -2);
 
-        ctx.font = "800 9px Arial";
-        ctx.fillText(String(d.amount), 0, 10);
+        ctx.font = "800 8px Arial";
+        ctx.fillText(String(r.amount), 0, 9);
 
         ctx.restore();
       }
@@ -1217,7 +1400,7 @@
         ctx.shadowColor = p.color;
         ctx.shadowBlur = 12;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 2.4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 2.3, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
@@ -1226,18 +1409,18 @@
     function drawGameOver() {
       ctx.save();
 
-      ctx.fillStyle = "rgba(0, 0, 0, .55)";
+      ctx.fillStyle = "rgba(0, 0, 0, .58)";
       ctx.fillRect(0, 0, W, H);
 
       ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = "900 36px Arial";
-      ctx.fillText("OYUN BİTTİ", W / 2, H / 2 - 30);
+      ctx.fillText("OYUN BİTTİ", W / 2, H / 2 - 34);
 
       ctx.fillStyle = "#9ed7ff";
       ctx.font = "900 18px Arial";
-      ctx.fillText("Skor: " + score + " | Ödül: " + rewardsCaught.length, W / 2, H / 2 + 12);
+      ctx.fillText("Skor: " + score + " | Ödül: " + rewardsCaught.length, W / 2, H / 2 + 10);
 
       ctx.restore();
     }
@@ -1256,144 +1439,83 @@
       ctx.closePath();
     }
 
-    function getCanvasPoint(event) {
-      const rect = canvas.getBoundingClientRect();
-
-      return {
-        x: (event.clientX - rect.left) * (W / rect.width),
-        y: (event.clientY - rect.top) * (H / rect.height)
-      };
+    function setDirection(dir) {
+      if (!player) return;
+      player.nextDir = dir;
     }
 
-    function setTouchTarget(event) {
-      if (!player || gameOver) return;
+    window.addEventListener("keydown", function(event) {
+      if (event.code === "ArrowUp" || event.code === "KeyW") setDirection(DIRS.up);
+      if (event.code === "ArrowDown" || event.code === "KeyS") setDirection(DIRS.down);
+      if (event.code === "ArrowLeft" || event.code === "KeyA") setDirection(DIRS.left);
+      if (event.code === "ArrowRight" || event.code === "KeyD") setDirection(DIRS.right);
+    });
 
-      const p = getCanvasPoint(event);
-      touchTargetX = p.x;
-    }
+    document.getElementById("upBtn").addEventListener("pointerdown", function(e) {
+      e.preventDefault();
+      setDirection(DIRS.up);
+    });
 
-    function stopTouchControl() {
-      pointerDown = false;
-      touchTargetX = null;
-      fireHeld = false;
-    }
+    document.getElementById("downBtn").addEventListener("pointerdown", function(e) {
+      e.preventDefault();
+      setDirection(DIRS.down);
+    });
+
+    document.getElementById("leftBtn").addEventListener("pointerdown", function(e) {
+      e.preventDefault();
+      setDirection(DIRS.left);
+    });
+
+    document.getElementById("rightBtn").addEventListener("pointerdown", function(e) {
+      e.preventDefault();
+      setDirection(DIRS.right);
+    });
 
     canvas.addEventListener("pointerdown", function(event) {
       event.preventDefault();
-
-      if (!running || gameOver) return;
-
-      pointerDown = true;
-      fireHeld = true;
-
-      try {
-        canvas.setPointerCapture(event.pointerId);
-      } catch (e) {}
-
-      setTouchTarget(event);
-      shoot();
+      swipeActive = true;
+      swipeStartX = event.clientX;
+      swipeStartY = event.clientY;
     });
 
     canvas.addEventListener("pointermove", function(event) {
       event.preventDefault();
 
-      if (!pointerDown) return;
+      if (!swipeActive) return;
 
-      setTouchTarget(event);
+      const dx = event.clientX - swipeStartX;
+      const dy = event.clientY - swipeStartY;
+
+      if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setDirection(dx > 0 ? DIRS.right : DIRS.left);
+      } else {
+        setDirection(dy > 0 ? DIRS.down : DIRS.up);
+      }
+
+      swipeStartX = event.clientX;
+      swipeStartY = event.clientY;
     });
 
     canvas.addEventListener("pointerup", function(event) {
       event.preventDefault();
-      stopTouchControl();
+      swipeActive = false;
     });
 
     canvas.addEventListener("pointercancel", function(event) {
       event.preventDefault();
-      stopTouchControl();
-    });
-
-    canvas.addEventListener("pointerleave", function() {
-      if (pointerDown) {
-        stopTouchControl();
-      }
-    });
-
-    window.addEventListener("keydown", function(event) {
-      if (event.code === "ArrowLeft" || event.code === "KeyA") {
-        keys.left = true;
-      }
-
-      if (event.code === "ArrowRight" || event.code === "KeyD") {
-        keys.right = true;
-      }
-
-      if (event.code === "Space") {
-        event.preventDefault();
-        fireHeld = true;
-        shoot();
-      }
-    });
-
-    window.addEventListener("keyup", function(event) {
-      if (event.code === "ArrowLeft" || event.code === "KeyA") {
-        keys.left = false;
-      }
-
-      if (event.code === "ArrowRight" || event.code === "KeyD") {
-        keys.right = false;
-      }
-
-      if (event.code === "Space") {
-        fireHeld = false;
-      }
-    });
-
-    function bindHoldButton(id, downFn, upFn) {
-      const el = document.getElementById(id);
-
-      el.addEventListener("pointerdown", function(event) {
-        event.preventDefault();
-        downFn();
-      });
-
-      el.addEventListener("pointerup", function(event) {
-        event.preventDefault();
-        upFn();
-      });
-
-      el.addEventListener("pointerleave", function() {
-        upFn();
-      });
-
-      el.addEventListener("pointercancel", function() {
-        upFn();
-      });
-    }
-
-    bindHoldButton("leftBtn", function() {
-      keys.left = true;
-    }, function() {
-      keys.left = false;
-    });
-
-    bindHoldButton("rightBtn", function() {
-      keys.right = true;
-    }, function() {
-      keys.right = false;
-    });
-
-    bindHoldButton("fireBtn", function() {
-      fireHeld = true;
-      shoot();
-    }, function() {
-      fireHeld = false;
+      swipeActive = false;
     });
 
     window.addEventListener("beforeunload", function() {
       stopMusic();
     });
 
-    drawBackground();
+    resetPellets();
+    resetPositions();
+    updateHud();
+    draw();
   </script>
 </body>
 </html>
