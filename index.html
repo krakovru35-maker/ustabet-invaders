@@ -5,6 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Marino Maze</title>
 
+  <!-- CACHE KIRICI -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <script>
+    (function () {
+      const GAME_VERSION = "maze-004";
+      const url = new URL(window.location.href);
+      const currentVersion = url.searchParams.get("v");
+      const cacheBreaker = url.searchParams.get("_cb");
+
+      if (currentVersion !== GAME_VERSION || !cacheBreaker) {
+        url.searchParams.set("v", GAME_VERSION);
+        url.searchParams.set("_cb", Date.now().toString());
+        window.location.replace(url.toString());
+        return;
+      }
+
+      if ("caches" in window) {
+        caches.keys().then(function (names) {
+          names.forEach(function (name) {
+            caches.delete(name);
+          });
+        }).catch(function () {});
+      }
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          registrations.forEach(function (registration) {
+            registration.unregister();
+          });
+        }).catch(function () {});
+      }
+
+      console.log("Game version:", GAME_VERSION);
+    })();
+  </script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -15,9 +54,10 @@
     html,
     body {
       margin: 0;
+      width: 100%;
       min-height: 100%;
       background:
-        radial-gradient(circle at top, rgba(40, 150, 255, .25), transparent 35%),
+        radial-gradient(circle at top, rgba(40, 150, 255, .28), transparent 35%),
         linear-gradient(180deg, #061b3d 0%, #020611 75%);
       color: #fff;
       font-family: Arial, sans-serif;
@@ -27,45 +67,47 @@
     body {
       display: flex;
       justify-content: center;
-      padding: 10px;
+      padding: 8px;
     }
 
     .app {
-      width: min(96vw, 620px);
-      min-height: 100vh;
+      width: min(96vw, 520px);
     }
 
     .top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
+      min-width: 0;
     }
 
     .logo {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       display: grid;
       place-items: center;
-      border-radius: 16px;
+      border-radius: 15px;
       background: linear-gradient(135deg, #80eaff, #347cff);
       color: #03101f;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
-      box-shadow: 0 0 28px rgba(80, 190, 255, .5);
+      box-shadow: 0 0 24px rgba(80, 190, 255, .5);
+      flex: 0 0 auto;
     }
 
     h1 {
       margin: 0;
-      font-size: 23px;
+      font-size: 22px;
       line-height: 1.05;
+      white-space: nowrap;
     }
 
     .sub {
@@ -73,23 +115,24 @@
       color: #9ed7ff;
       font-size: 12px;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .pill {
       border: 1px solid rgba(126, 231, 255, .55);
       border-radius: 999px;
-      padding: 9px 12px;
+      padding: 8px 10px;
       background: rgba(0, 25, 55, .45);
       color: #dff7ff;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       white-space: nowrap;
     }
 
     .panel {
       border: 1px solid rgba(67, 166, 255, .55);
-      border-radius: 24px;
-      padding: 12px;
+      border-radius: 22px;
+      padding: 10px;
       background: rgba(0, 9, 25, .75);
       box-shadow: 0 0 45px rgba(0, 132, 255, .22);
       overflow: hidden;
@@ -98,34 +141,34 @@
     .hud {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 7px;
+      margin-bottom: 9px;
     }
 
     .stat {
-      min-height: 55px;
+      min-height: 50px;
       border: 1px solid rgba(118, 175, 255, .28);
-      border-radius: 14px;
-      padding: 9px 10px;
+      border-radius: 13px;
+      padding: 8px;
       background: rgba(255, 255, 255, .07);
     }
 
     .stat b {
       display: block;
       color: #9ed7ff;
-      font-size: 10px;
+      font-size: 9px;
       margin-bottom: 6px;
     }
 
     .stat span {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 900;
     }
 
     .gameWrap {
       position: relative;
       width: 100%;
-      border-radius: 20px;
+      border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(42, 184, 255, .58);
       background: #010711;
@@ -144,20 +187,20 @@
       inset: 0;
       display: grid;
       place-items: center;
-      padding: 20px;
-      z-index: 5;
+      padding: 14px;
+      z-index: 20;
       background:
-        radial-gradient(circle at center, rgba(45, 145, 255, .18), rgba(0, 0, 0, .82) 72%),
-        rgba(0, 0, 0, .68);
+        radial-gradient(circle at center, rgba(45, 145, 255, .20), rgba(0, 0, 0, .88) 72%),
+        rgba(0, 0, 0, .72);
     }
 
     .startBox {
-      width: min(94%, 410px);
+      width: min(94%, 390px);
       text-align: center;
       border: 1px solid rgba(126, 231, 255, .42);
       border-radius: 22px;
-      padding: 20px;
-      background: rgba(2, 10, 25, .94);
+      padding: 18px;
+      background: rgba(2, 10, 25, .96);
       box-shadow: 0 0 36px rgba(0, 140, 255, .24);
     }
 
@@ -169,15 +212,15 @@
     }
 
     .startBox p {
-      margin: 0 0 14px;
+      margin: 0 0 13px;
       color: #cfe8ff;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.45;
     }
 
     input {
       width: 100%;
-      height: 48px;
+      height: 46px;
       border-radius: 14px;
       border: 1px solid rgba(126, 231, 255, .35);
       outline: none;
@@ -214,7 +257,7 @@
     }
 
     .controls {
-      margin-top: 10px;
+      margin-top: 9px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-areas:
@@ -222,15 +265,15 @@
         "left mid right"
         ". down .";
       gap: 7px;
-      max-width: 260px;
+      max-width: 245px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .ctrl {
-      height: 48px;
+      height: 45px;
       color: #dff7ff;
-      font-size: 20px;
+      font-size: 19px;
       background: rgba(0, 40, 82, .76);
       border: 1px solid rgba(65, 178, 255, .5);
       box-shadow: none;
@@ -238,22 +281,24 @@
 
     .up { grid-area: up; }
     .left { grid-area: left; }
+
     .mid {
       grid-area: mid;
       background: rgba(126, 231, 255, .12);
       color: #7ee7ff;
     }
+
     .right { grid-area: right; }
     .down { grid-area: down; }
 
     .message {
-      min-height: 42px;
+      min-height: 40px;
       border-radius: 14px;
-      padding: 11px 12px;
-      margin-top: 10px;
+      padding: 10px 11px;
+      margin-top: 9px;
       background: rgba(255, 255, 255, .08);
       color: #cfe8ff;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.35;
     }
 
@@ -274,45 +319,57 @@
       font-weight: 900;
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 430px) {
       body {
         padding: 6px;
       }
 
+      .app {
+        width: 100%;
+      }
+
       .logo {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
       }
 
       h1 {
-        font-size: 20px;
+        font-size: 19px;
+      }
+
+      .sub {
+        font-size: 11px;
       }
 
       .pill {
-        font-size: 11px;
-        padding: 8px 10px;
-      }
-
-      .panel {
-        padding: 10px;
-        border-radius: 20px;
-      }
-
-      .hud {
-        gap: 6px;
-      }
-
-      .stat {
-        min-height: 50px;
+        font-size: 10px;
         padding: 7px 8px;
       }
 
-      .stat b {
-        font-size: 9px;
+      .panel {
+        padding: 8px;
+      }
+
+      .hud {
+        gap: 5px;
+      }
+
+      .stat {
+        min-height: 47px;
+        padding: 7px;
       }
 
       .stat span {
-        font-size: 16px;
+        font-size: 15px;
+      }
+
+      .controls {
+        max-width: 230px;
+      }
+
+      .ctrl {
+        height: 43px;
       }
     }
   </style>
@@ -353,19 +410,19 @@
       </div>
 
       <div class="gameWrap">
-        <canvas id="game" width="532" height="588"></canvas>
+        <canvas id="game" width="456" height="504"></canvas>
 
         <div id="startScreen" class="startScreen">
           <div class="startBox">
             <h2>Marino Maze</h2>
             <p>
-              Noktaları topla. Mavi güç kapsülünü alınca hayaletler yakalanabilir olur.
-              Hayalet yakalayınca nadiren FS / FB ödül kapsülü düşer. Kapsülü yakalarsan ödül sayılır.
+              Noktaları topla. Mavi kapsülü alınca hayaletleri yakala.
+              Hayaletlerden nadiren FS / FB ödül kapsülü düşer.
             </p>
 
             <input id="siteUsername" type="text" placeholder="Site kullanıcı adını yaz" />
 
-            <button class="startBtn" onclick="startGame()">
+            <button id="startBtn" class="startBtn">
               OYUNU BAŞLAT
             </button>
           </div>
@@ -381,7 +438,7 @@
       </div>
 
       <div id="message" class="message">
-        Hazır. Mobilde kaydırarak veya alttaki yön tuşlarıyla oynayabilirsin.
+        Hazır. Başlat butonuna bas. Mobilde kaydırarak veya alttaki yön tuşlarıyla oynayabilirsin.
       </div>
 
       <div id="rewardList" class="rewardList"></div>
@@ -399,14 +456,15 @@
     const messageEl = document.getElementById("message");
     const rewardListEl = document.getElementById("rewardList");
     const startScreen = document.getElementById("startScreen");
+    const startBtn = document.getElementById("startBtn");
 
-    const CELL = 28;
+    const CELL = 24;
     const COLS = 19;
     const ROWS = 21;
     const W = canvas.width;
     const H = canvas.height;
 
-    const baseMaze = [
+    const maze = [
       "1111111111111111111",
       "1000000001000000001",
       "1011011101011101101",
@@ -447,7 +505,7 @@
     let lives = 3;
     let level = 1;
 
-    let player;
+    let player = null;
     let ghosts = [];
     let pelletGrid = [];
     let powerModeUntil = 0;
@@ -491,16 +549,16 @@
 
     function isWallCell(col, row) {
       if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return true;
-      return baseMaze[row][col] === "1";
+      return maze[row][col] === "1";
     }
 
     function isWallAtPixel(x, y) {
-      const c = getCellFromPixel(x, y);
-      return isWallCell(c.col, c.row);
+      const cell = getCellFromPixel(x, y);
+      return isWallCell(cell.col, cell.row);
     }
 
     function canOccupy(x, y, radius) {
-      const r = radius || 9;
+      const r = radius || 8;
 
       return !(
         isWallAtPixel(x - r, y - r) ||
@@ -515,8 +573,8 @@
       const row = Math.round((entity.y - CELL / 2) / CELL);
 
       return {
-        col: col,
-        row: row,
+        col,
+        row,
         x: col * CELL + CELL / 2,
         y: row * CELL + CELL / 2
       };
@@ -555,7 +613,7 @@
         pelletGrid[r] = [];
 
         for (let c = 0; c < COLS; c++) {
-          const ch = baseMaze[r][c];
+          const ch = maze[r][c];
 
           if (ch === "0") {
             pelletGrid[r][c] = "dot";
@@ -616,26 +674,26 @@
     }
 
     function soundDot() {
-      playTone(520, 0.035, "square", 0.016);
+      playTone(650, 0.035, "square", 0.014);
     }
 
     function soundPower() {
-      const notes = [330, 440, 660, 880];
+      const notes = [330, 440, 660, 880, 990];
 
       notes.forEach(function(n, i) {
         setTimeout(function() {
-          playTone(n, 0.07, "triangle", 0.035);
-        }, i * 70);
+          playTone(n, 0.065, "triangle", 0.035);
+        }, i * 55);
       });
     }
 
     function soundGhostEat() {
-      const notes = [220, 330, 440];
+      const notes = [220, 330, 440, 660];
 
       notes.forEach(function(n, i) {
         setTimeout(function() {
-          playTone(n, 0.08, "square", 0.035);
-        }, i * 80);
+          playTone(n, 0.07, "square", 0.035);
+        }, i * 65);
       });
     }
 
@@ -679,26 +737,30 @@
       stopMusic();
 
       /*
-        Farklı müzik:
-        Bu Space Invaders'taki marka ritmi değil.
-        Marino Maze için daha karanlık, hızlı, labirent arcade tınısı.
+        Orijinal Pac-Man müziği değildir.
+        Telifsiz, benzer nostaljik arcade havasında özel chiptune döngüsüdür.
       */
 
       const motif = [
-        { n: 196, d: 0.06, g: 115 },
-        { n: 247, d: 0.05, g: 95 },
-        { n: 294, d: 0.05, g: 95 },
-        { n: 247, d: 0.05, g: 120 },
+        { n: 392, d: 0.055, g: 95 },
+        { n: 523, d: 0.055, g: 95 },
+        { n: 659, d: 0.055, g: 95 },
+        { n: 784, d: 0.075, g: 140 },
 
-        { n: 220, d: 0.06, g: 105 },
-        { n: 277, d: 0.05, g: 95 },
-        { n: 330, d: 0.05, g: 95 },
-        { n: 277, d: 0.08, g: 170 },
+        { n: 659, d: 0.055, g: 95 },
+        { n: 523, d: 0.055, g: 95 },
+        { n: 440, d: 0.055, g: 95 },
+        { n: 523, d: 0.080, g: 155 },
 
-        { n: 196, d: 0.05, g: 95 },
-        { n: 262, d: 0.05, g: 95 },
-        { n: 330, d: 0.05, g: 95 },
-        { n: 392, d: 0.09, g: 210 }
+        { n: 330, d: 0.055, g: 95 },
+        { n: 392, d: 0.055, g: 95 },
+        { n: 494, d: 0.055, g: 95 },
+        { n: 587, d: 0.075, g: 140 },
+
+        { n: 494, d: 0.055, g: 95 },
+        { n: 392, d: 0.055, g: 95 },
+        { n: 330, d: 0.055, g: 95 },
+        { n: 262, d: 0.090, g: 190 }
       ];
 
       musicStep = 0;
@@ -713,17 +775,15 @@
 
         const item = motif[musicStep % motif.length];
 
-        playTone(item.n, item.d, "square", 0.011);
-        playTone(item.n / 2, item.d + 0.025, "triangle", 0.006);
+        playTone(item.n, item.d, "square", 0.010);
+        playTone(item.n / 2, item.d + 0.035, "triangle", 0.006);
 
         if (powerModeUntil > Date.now()) {
-          playTone(item.n * 1.5, 0.045, "triangle", 0.008);
+          playTone(item.n * 1.5, 0.045, "triangle", 0.007);
         }
 
-        if (musicStep % 8 === 7) {
-          setTimeout(function() {
-            playTone(98, 0.08, "square", 0.008);
-          }, 100);
+        if (musicStep % 8 === 0) {
+          playTone(98, 0.08, "square", 0.008);
         }
 
         musicStep++;
@@ -736,57 +796,19 @@
     function stopMusic() {
       if (musicTimer) {
         clearTimeout(musicTimer);
-        clearInterval(musicTimer);
         musicTimer = null;
       }
     }
 
-    function startGame() {
-      const input = document.getElementById("siteUsername");
-      username = input.value.trim();
-
-      if (!username) {
-        setMessage("Önce site kullanıcı adını yaz.");
-        input.focus();
-        return;
-      }
-
-      unlockAudio();
-
-      score = 0;
-      lives = 3;
-      level = 1;
-      running = true;
-      gameOver = false;
-      rewardDrops = [];
-      rewardsCaught = [];
-      particles = [];
-      powerModeUntil = 0;
-
-      resetPellets();
-      resetPositions();
-
-      startScreen.style.display = "none";
-      rewardListEl.innerHTML = "";
-
-      setMessage("Oyun başladı. Mobilde kaydırarak yön ver. Mavi kapsülü alınca hayaletleri yakalayabilirsin.");
-      updateHud();
-
-      startMusic();
-
-      lastTime = performance.now();
-      requestAnimationFrame(loop);
-    }
-
     function resetPositions() {
-      const p = centerOf(9, 19);
+      const p = centerOf(9, 17);
 
       player = {
         x: p.x,
         y: p.y,
-        r: 10,
-        speed: 2.25,
-        dir: DIRS.left,
+        r: 8,
+        speed: 2.05 + level * 0.05,
+        dir: DIRS.none,
         nextDir: DIRS.left,
         mouth: 0
       };
@@ -806,14 +828,50 @@
           y: pos.y,
           startX: pos.x,
           startY: pos.y,
-          r: 10,
+          r: 8,
           color: g.color,
           name: g.name,
           dir: i % 2 === 0 ? DIRS.left : DIRS.right,
-          speed: 1.55 + level * 0.08,
+          speed: 1.36 + level * 0.07,
           eatenCooldown: 0
         };
       });
+    }
+
+    function startGame() {
+      const input = document.getElementById("siteUsername");
+      username = input.value.trim();
+
+      if (!username) {
+        username = "test_user";
+      }
+
+      unlockAudio();
+
+      score = 0;
+      lives = 3;
+      level = 1;
+      running = true;
+      gameOver = false;
+
+      rewardDrops = [];
+      rewardsCaught = [];
+      particles = [];
+      powerModeUntil = 0;
+
+      resetPellets();
+      resetPositions();
+
+      rewardListEl.innerHTML = "";
+      startScreen.style.display = "none";
+
+      setMessage("Oyun başladı. Mobilde kaydırarak yön ver. Mavi kapsülü alınca hayaletleri yakalayabilirsin.");
+      updateHud();
+
+      startMusic();
+
+      lastTime = performance.now();
+      requestAnimationFrame(loop);
     }
 
     function loop(now) {
@@ -890,8 +948,8 @@
           const dist = Math.hypot(dx, dy);
 
           if (dist > 2) {
-            g.x += (dx / dist) * 2.6 * dt;
-            g.y += (dy / dist) * 2.6 * dt;
+            g.x += (dx / dist) * 2.45 * dt;
+            g.y += (dy / dist) * 2.45 * dt;
           } else {
             g.x = g.startX;
             g.y = g.startY;
@@ -905,7 +963,7 @@
           g.dir = chooseGhostDirection(g, vulnerable);
         }
 
-        const speed = vulnerable ? 1.28 + level * 0.03 : g.speed;
+        const speed = vulnerable ? 1.18 + level * 0.02 : g.speed;
         const nx = g.x + g.dir.x * speed * dt;
         const ny = g.y + g.dir.y * speed * dt;
 
@@ -935,7 +993,7 @@
         });
       }
 
-      if (Math.random() < 0.18) {
+      if (Math.random() < 0.22) {
         return usable[Math.floor(Math.random() * usable.length)];
       }
 
@@ -969,7 +1027,7 @@
 
       if (item === "power") {
         score += 80;
-        powerModeUntil = Date.now() + Math.max(5200, 8200 - level * 450);
+        powerModeUntil = Date.now() + Math.max(5000, 8200 - level * 450);
         soundPower();
         setMessage("Güç modu aktif! Hayaletleri yakala, nadir ödül kapsülü düşebilir.");
       }
@@ -1002,16 +1060,14 @@
       if (rewardsCaught.length >= 1) return;
       if (rewardDrops.length >= 1) return;
 
-      const chance = 0.12;
+      const chance = 0.13;
 
       if (Math.random() > chance) {
         setMessage("Hayalet yakalandı ama ödül düşmedi. Devam.");
         return;
       }
 
-      const isFreebet = Math.random() < 0.42;
-      const type = isFreebet ? "FREEBET" : "FREESPIN";
-
+      const type = Math.random() < 0.45 ? "FREEBET" : "FREESPIN";
       let amount;
 
       if (type === "FREESPIN") {
@@ -1028,11 +1084,11 @@
         id: "DROP-" + Date.now(),
         x: g.x,
         y: g.y,
-        r: 16,
-        type: type,
-        amount: amount,
-        label: label,
-        ttl: 9000,
+        r: 14,
+        type,
+        amount,
+        label,
+        ttl: 8500,
         spin: 0
       });
 
@@ -1067,7 +1123,7 @@
             type: r.type,
             amount: r.amount,
             label: r.label,
-            username: username,
+            username,
             time: new Date().toISOString()
           });
 
@@ -1080,7 +1136,7 @@
           tag.textContent = r.label;
           rewardListEl.appendChild(tag);
 
-          setMessage("Ödül yakalandı: " + r.label + ". Sonraki adımda bunu Sheets'e PENDING yazdıracağız.");
+          setMessage("Ödül yakalandı: " + r.label + ". Sonraki aşamada bunu Sheets'e PENDING yazdıracağız.");
         }
       }
 
@@ -1120,22 +1176,19 @@
       stopMusic();
       soundGameOver();
       updateHud();
-      setMessage(text + " Skor: " + score + ". Sayfayı yenileyip tekrar oynayabilirsin.");
-
-      setTimeout(function() {
-        draw();
-      }, 80);
+      setMessage(text + " Skor: " + score + ". Tekrar oynamak için sayfayı yenile.");
+      draw();
     }
 
     function explode(x, y, color) {
       for (let i = 0; i < 18; i++) {
         particles.push({
-          x: x,
-          y: y,
+          x,
+          y,
           vx: (Math.random() - 0.5) * 5,
           vy: (Math.random() - 0.5) * 5,
           life: 1,
-          color: color
+          color
         });
       }
     }
@@ -1176,19 +1229,19 @@
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
 
-      ctx.fillStyle = "rgba(255,255,255,.35)";
+      ctx.fillStyle = "rgba(255,255,255,.32)";
 
-      for (let i = 0; i < 70; i++) {
+      for (let i = 0; i < 60; i++) {
         const x = (i * 71 + Date.now() * 0.012) % W;
         const y = (i * 47 + Date.now() * 0.016) % H;
-        ctx.fillRect(x, y, 1.1, 1.1);
+        ctx.fillRect(x, y, 1.05, 1.05);
       }
     }
 
     function drawMaze() {
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (baseMaze[r][c] !== "1") continue;
+          if (maze[r][c] !== "1") continue;
 
           const x = c * CELL;
           const y = r * CELL;
@@ -1196,15 +1249,15 @@
           ctx.save();
 
           ctx.shadowColor = "#1ca8ff";
-          ctx.shadowBlur = 10;
-          ctx.fillStyle = "rgba(23, 89, 190, .52)";
-          roundRect(x + 3, y + 3, CELL - 6, CELL - 6, 8);
+          ctx.shadowBlur = 9;
+          ctx.fillStyle = "rgba(23, 89, 190, .58)";
+          roundRect(x + 2, y + 2, CELL - 4, CELL - 4, 7);
           ctx.fill();
 
           ctx.shadowBlur = 0;
-          ctx.strokeStyle = "rgba(126, 231, 255, .35)";
+          ctx.strokeStyle = "rgba(126, 231, 255, .32)";
           ctx.lineWidth = 1;
-          roundRect(x + 3.5, y + 3.5, CELL - 7, CELL - 7, 8);
+          roundRect(x + 2.5, y + 2.5, CELL - 5, CELL - 5, 7);
           ctx.stroke();
 
           ctx.restore();
@@ -1226,24 +1279,24 @@
           if (item === "dot") {
             ctx.fillStyle = "rgba(255, 230, 150, .9)";
             ctx.shadowColor = "#ffe28a";
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 7;
             ctx.beginPath();
-            ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+            ctx.arc(x, y, 2.5, 0, Math.PI * 2);
             ctx.fill();
           }
 
           if (item === "power") {
-            const pulse = 2 + Math.sin(Date.now() / 120) * 1.5;
+            const pulse = 1.8 + Math.sin(Date.now() / 120) * 1.4;
 
             ctx.fillStyle = "#7ee7ff";
             ctx.shadowColor = "#7ee7ff";
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 18;
             ctx.beginPath();
-            ctx.arc(x, y, 8 + pulse, 0, Math.PI * 2);
+            ctx.arc(x, y, 7 + pulse, 0, Math.PI * 2);
             ctx.fill();
 
             ctx.fillStyle = "#03101f";
-            ctx.font = "900 11px Arial";
+            ctx.font = "900 9px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText("M", x, y + 1);
@@ -1270,7 +1323,7 @@
       ctx.rotate(angle);
 
       ctx.shadowColor = "#ffe28a";
-      ctx.shadowBlur = 18;
+      ctx.shadowBlur = 16;
       ctx.fillStyle = "#ffcf4a";
 
       ctx.beginPath();
@@ -1281,7 +1334,7 @@
 
       ctx.shadowBlur = 0;
       ctx.fillStyle = "#03101f";
-      ctx.font = "900 10px Arial";
+      ctx.font = "900 8px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.rotate(-angle);
@@ -1299,7 +1352,7 @@
           ctx.globalAlpha = 0.35;
           ctx.fillStyle = "#ffffff";
           ctx.beginPath();
-          ctx.arc(g.x, g.y, 5, 0, Math.PI * 2);
+          ctx.arc(g.x, g.y, 4.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
           continue;
@@ -1308,12 +1361,12 @@
         ctx.save();
 
         const color = vulnerable ? "#2f74ff" : g.color;
-        const pulse = Math.sin(Date.now() / 120 + g.x) * 1.5;
+        const pulse = Math.sin(Date.now() / 120 + g.x) * 1.2;
 
         ctx.translate(g.x, g.y + pulse);
 
         ctx.shadowColor = color;
-        ctx.shadowBlur = vulnerable ? 24 : 16;
+        ctx.shadowBlur = vulnerable ? 22 : 15;
         ctx.fillStyle = color;
 
         ctx.beginPath();
@@ -1329,23 +1382,15 @@
         ctx.shadowBlur = 0;
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
-        ctx.arc(-4, -3, 3, 0, Math.PI * 2);
-        ctx.arc(5, -3, 3, 0, Math.PI * 2);
+        ctx.arc(-3.5, -3, 2.6, 0, Math.PI * 2);
+        ctx.arc(4.5, -3, 2.6, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = "#03101f";
         ctx.beginPath();
-        ctx.arc(-3, -3, 1.4, 0, Math.PI * 2);
-        ctx.arc(6, -3, 1.4, 0, Math.PI * 2);
+        ctx.arc(-3, -3, 1.2, 0, Math.PI * 2);
+        ctx.arc(5, -3, 1.2, 0, Math.PI * 2);
         ctx.fill();
-
-        if (vulnerable) {
-          ctx.fillStyle = "#ffffff";
-          ctx.font = "900 8px Arial";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("YAKALA", 0, 14);
-        }
 
         ctx.restore();
       }
@@ -1361,9 +1406,9 @@
         ctx.rotate(Math.sin(r.spin) * 0.25);
 
         ctx.shadowColor = r.type === "FREEBET" ? "#ffe28a" : "#7ee7ff";
-        ctx.shadowBlur = 24;
+        ctx.shadowBlur = 22;
 
-        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 22);
+        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 20);
 
         if (r.type === "FREEBET") {
           gradient.addColorStop(0, "#fff3ba");
@@ -1380,13 +1425,13 @@
 
         ctx.shadowBlur = 0;
         ctx.fillStyle = "#03101f";
-        ctx.font = "900 12px Arial";
+        ctx.font = "900 11px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(r.type === "FREEBET" ? "FB" : "FS", 0, -2);
 
-        ctx.font = "800 8px Arial";
-        ctx.fillText(String(r.amount), 0, 9);
+        ctx.font = "800 7px Arial";
+        ctx.fillText(String(r.amount), 0, 8);
 
         ctx.restore();
       }
@@ -1398,9 +1443,9 @@
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 2.3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 2.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
@@ -1409,18 +1454,18 @@
     function drawGameOver() {
       ctx.save();
 
-      ctx.fillStyle = "rgba(0, 0, 0, .58)";
+      ctx.fillStyle = "rgba(0, 0, 0, .62)";
       ctx.fillRect(0, 0, W, H);
 
       ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.font = "900 36px Arial";
-      ctx.fillText("OYUN BİTTİ", W / 2, H / 2 - 34);
+      ctx.font = "900 31px Arial";
+      ctx.fillText("OYUN BİTTİ", W / 2, H / 2 - 30);
 
       ctx.fillStyle = "#9ed7ff";
-      ctx.font = "900 18px Arial";
-      ctx.fillText("Skor: " + score + " | Ödül: " + rewardsCaught.length, W / 2, H / 2 + 10);
+      ctx.font = "900 16px Arial";
+      ctx.fillText("Skor: " + score + " | Ödül: " + rewardsCaught.length, W / 2, H / 2 + 8);
 
       ctx.restore();
     }
@@ -1443,6 +1488,11 @@
       if (!player) return;
       player.nextDir = dir;
     }
+
+    startBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      startGame();
+    });
 
     window.addEventListener("keydown", function(event) {
       if (event.code === "ArrowUp" || event.code === "KeyW") setDirection(DIRS.up);
@@ -1486,7 +1536,7 @@
       const dx = event.clientX - swipeStartX;
       const dy = event.clientY - swipeStartY;
 
-      if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
 
       if (Math.abs(dx) > Math.abs(dy)) {
         setDirection(dx > 0 ? DIRS.right : DIRS.left);
