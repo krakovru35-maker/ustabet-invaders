@@ -11,7 +11,7 @@
 
   <script>
     (function () {
-      const GAME_VERSION = "maze-006-countdown-fixed";
+      const GAME_VERSION = "maze-007-dot-pass-fixed";
       const url = new URL(window.location.href);
 
       if (url.searchParams.get("v") !== GAME_VERSION) {
@@ -30,8 +30,6 @@
           .then(regs => regs.forEach(r => r.unregister()))
           .catch(() => {});
       }
-
-      console.log("Game version:", GAME_VERSION);
     })();
   </script>
 
@@ -483,7 +481,7 @@
       right: { x: 1, y: 0, name: "right" }
     };
 
-    let state = "idle"; 
+    let state = "idle";
     let lastTime = performance.now();
     let countdownText = "";
     let countdownActive = false;
@@ -537,6 +535,10 @@
 
     function isWallCell(col, row) {
       if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return true;
+
+      // KRİTİK DÜZELTME:
+      // SADECE "1" DUVAR SAYILIR.
+      // "0" yol, "P" güç noktasıdır. Sarı noktalar ayrı pelletGrid üzerinden yönetilir.
       return maze[row][col] === "1";
     }
 
@@ -568,7 +570,7 @@
       };
     }
 
-    function nearCenter(entity, threshold = 3) {
+    function nearCenter(entity, threshold = 4) {
       const c = nearestCenter(entity);
       return Math.abs(entity.x - c.x) <= threshold && Math.abs(entity.y - c.y) <= threshold;
     }
@@ -883,7 +885,7 @@
     function updatePlayer(dt) {
       if (!player) return;
 
-      if (nearCenter(player, 3)) {
+      if (nearCenter(player, 4)) {
         snapCenter(player);
 
         if (canMoveFromCenter(player, player.nextDir)) {
@@ -933,7 +935,7 @@
           continue;
         }
 
-        if (nearCenter(g, 3)) {
+        if (nearCenter(g, 4)) {
           snapCenter(g);
           g.dir = chooseGhostDirection(g, vulnerable);
         }
