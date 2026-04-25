@@ -1,1692 +1,1709 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Marino Maze</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+<title>Marino Maze</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at top, rgba(0, 140, 255, 0.28), transparent 34%),
-        radial-gradient(circle at bottom, rgba(0, 255, 200, 0.10), transparent 35%),
-        linear-gradient(180deg, #061735 0%, #020611 78%);
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-      overscroll-behavior: none;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    body {
-      padding: 8px;
-      display: flex;
-      justify-content: center;
-    }
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(0, 140, 255, 0.28), transparent 35%),
+    linear-gradient(180deg, #071a3a 0%, #020611 80%);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
 
-    .app {
-      width: min(96vw, 520px);
-    }
+body {
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+}
 
-    .top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
+.app {
+  width: min(96vw, 520px);
+}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
 
-    .logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 15px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #7ee7ff, #2d7dff);
-      color: #03101f;
-      font-size: 25px;
-      font-weight: 900;
-      box-shadow: 0 0 24px rgba(97, 205, 255, 0.55);
-      flex: 0 0 auto;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 22px;
-      line-height: 1.05;
-      white-space: nowrap;
-    }
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #7ee7ff, #2d7dff);
+  color: #03101f;
+  font-size: 25px;
+  font-weight: 900;
+  box-shadow: 0 0 24px rgba(97, 205, 255, 0.55);
+}
 
-    .sub {
-      margin-top: 3px;
-      color: #9ed7ff;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
+h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.05;
+}
 
-    .pill {
-      border: 1px solid rgba(126, 231, 255, 0.6);
-      border-radius: 999px;
-      padding: 8px 10px;
-      background: rgba(0, 25, 55, 0.55);
-      color: #dff7ff;
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
-      box-shadow: 0 0 20px rgba(126, 231, 255, 0.12);
-    }
+.sub {
+  margin-top: 3px;
+  color: #9ed7ff;
+  font-size: 12px;
+  font-weight: 700;
+}
 
-    .panel {
-      border: 1px solid rgba(67, 166, 255, 0.58);
-      border-radius: 22px;
-      padding: 10px;
-      background: rgba(0, 9, 25, 0.78);
-      box-shadow: 0 0 45px rgba(0, 132, 255, 0.22);
-      overflow: hidden;
-    }
+.pill {
+  border: 1px solid rgba(126, 231, 255, 0.6);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: rgba(0, 25, 55, 0.55);
+  color: #dff7ff;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
 
-    .hud {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-      margin-bottom: 9px;
-    }
+.panel {
+  border: 1px solid rgba(67, 166, 255, 0.58);
+  border-radius: 22px;
+  padding: 10px;
+  background: rgba(0, 9, 25, 0.78);
+  box-shadow: 0 0 45px rgba(0, 132, 255, 0.22);
+  overflow: hidden;
+}
 
-    .stat {
-      min-height: 51px;
-      border: 1px solid rgba(118, 175, 255, 0.30);
-      border-radius: 14px;
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.075);
-    }
+.hud {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-bottom: 9px;
+}
 
-    .stat b {
-      display: block;
-      color: #9ed7ff;
-      font-size: 9px;
-      margin-bottom: 6px;
-      letter-spacing: 0.4px;
-    }
+.stat {
+  min-height: 51px;
+  border: 1px solid rgba(118, 175, 255, 0.30);
+  border-radius: 14px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.075);
+}
 
-    .stat span {
-      font-size: 17px;
-      font-weight: 900;
-    }
+.stat b {
+  display: block;
+  color: #9ed7ff;
+  font-size: 9px;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
 
-    .gameWrap {
-      position: relative;
-      width: 100%;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(42, 184, 255, 0.58);
-      background: #010711;
-    }
+.stat span {
+  font-size: 17px;
+  font-weight: 900;
+}
 
-    canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      background: #010711;
-      touch-action: none;
-      transform: translateZ(0);
-      will-change: transform;
-    }
+.gameWrap {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(42, 184, 255, 0.58);
+  background: #010711;
+}
 
-    .startScreen {
-      position: absolute;
-      inset: 0;
-      z-index: 30;
-      display: grid;
-      place-items: center;
-      padding: 15px;
-      background:
-        radial-gradient(circle at center, rgba(45, 145, 255, 0.20), rgba(0, 0, 0, 0.88) 72%),
-        rgba(0, 0, 0, 0.74);
-    }
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #010711;
+  touch-action: none;
+  transform: translateZ(0);
+  will-change: transform;
+}
 
-    .startBox {
-      width: min(94%, 390px);
-      text-align: center;
-      border: 1px solid rgba(126, 231, 255, 0.42);
-      border-radius: 22px;
-      padding: 18px;
-      background: rgba(2, 10, 25, 0.96);
-      box-shadow: 0 0 36px rgba(0, 140, 255, 0.24);
-    }
+.startScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 15px;
+  background:
+    radial-gradient(circle at center, rgba(45, 145, 255, 0.20), rgba(0, 0, 0, 0.88) 72%),
+    rgba(0, 0, 0, 0.74);
+}
 
-    .startBox h2 {
-      margin: 0 0 8px;
-      color: #7ee7ff;
-      font-size: 30px;
-      text-shadow: 0 0 20px rgba(126, 231, 255, 0.75);
-    }
+.startBox {
+  width: min(94%, 390px);
+  text-align: center;
+  border: 1px solid rgba(126, 231, 255, 0.42);
+  border-radius: 22px;
+  padding: 18px;
+  background: rgba(2, 10, 25, 0.96);
+  box-shadow: 0 0 36px rgba(0, 140, 255, 0.24);
+}
 
-    .startBox p {
-      margin: 0 0 13px;
-      color: #cfe8ff;
-      font-size: 13px;
-      line-height: 1.45;
-    }
+.startBox h2 {
+  margin: 0 0 8px;
+  color: #7ee7ff;
+  font-size: 30px;
+  text-shadow: 0 0 20px rgba(126, 231, 255, 0.75);
+}
 
-    input {
-      width: 100%;
-      height: 46px;
-      border-radius: 14px;
-      border: 1px solid rgba(126, 231, 255, 0.35);
-      outline: none;
-      padding: 0 14px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
+.startBox p {
+  margin: 0 0 13px;
+  color: #cfe8ff;
+  font-size: 13px;
+  line-height: 1.45;
+}
 
-    input::placeholder {
-      color: #8aa9c8;
-    }
+input {
+  width: 100%;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(126, 231, 255, 0.35);
+  outline: none;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
 
-    button {
-      border: 0;
-      cursor: pointer;
-      border-radius: 16px;
-      font-weight: 900;
-      color: #03101f;
-      background: linear-gradient(135deg, #ffe99b, #ffbf43);
-      box-shadow: 0 12px 22px rgba(255, 191, 67, 0.22);
-    }
+input::placeholder {
+  color: #8aa9c8;
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+button {
+  border: 0;
+  cursor: pointer;
+  border-radius: 16px;
+  font-weight: 900;
+  color: #03101f;
+  background: linear-gradient(135deg, #ffe99b, #ffbf43);
+  box-shadow: 0 12px 22px rgba(255, 191, 67, 0.22);
+}
 
-    .startBtn {
-      width: 100%;
-      height: 50px;
-      font-size: 16px;
-    }
+button:active {
+  transform: scale(0.98);
+}
 
-    .controls {
-      margin-top: 9px;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-template-areas:
-        ". up ."
-        "left mid right"
-        ". down .";
-      gap: 7px;
-      max-width: 250px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+.startBtn {
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+}
 
-    .ctrl {
-      height: 45px;
-      color: #dff7ff;
-      font-size: 19px;
-      background: rgba(0, 40, 82, 0.78);
-      border: 1px solid rgba(65, 178, 255, 0.5);
-      box-shadow: none;
-    }
+.controls {
+  margin-top: 9px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    ". up ."
+    "left mid right"
+    ". down .";
+  gap: 7px;
+  max-width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-    .up { grid-area: up; }
-    .left { grid-area: left; }
-    .right { grid-area: right; }
-    .down { grid-area: down; }
+.ctrl {
+  height: 45px;
+  color: #dff7ff;
+  font-size: 19px;
+  background: rgba(0, 40, 82, 0.78);
+  border: 1px solid rgba(65, 178, 255, 0.5);
+  box-shadow: none;
+}
 
-    .mid {
-      grid-area: mid;
-      background: rgba(126, 231, 255, 0.12);
-      color: #7ee7ff;
-    }
+.up { grid-area: up; }
+.left { grid-area: left; }
+.right { grid-area: right; }
+.down { grid-area: down; }
 
-    .message {
-      min-height: 42px;
-      border-radius: 14px;
-      padding: 10px 11px;
-      margin-top: 9px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #cfe8ff;
-      font-size: 12px;
-      line-height: 1.35;
-    }
+.mid {
+  grid-area: mid;
+  background: rgba(126, 231, 255, 0.12);
+  color: #7ee7ff;
+}
 
-    .rewardList {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+.message {
+  min-height: 42px;
+  border-radius: 14px;
+  padding: 10px 11px;
+  margin-top: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #cfe8ff;
+  font-size: 12px;
+  line-height: 1.35;
+}
 
-    .rewardTag {
-      border-radius: 999px;
-      padding: 6px 10px;
-      background: rgba(126, 231, 255, 0.12);
-      border: 1px solid rgba(126, 231, 255, 0.35);
-      color: #dff7ff;
-      font-size: 12px;
-      font-weight: 900;
-    }
+.rewardList {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 
-    @media (max-width: 430px) {
-      body {
-        padding: 6px;
-      }
+.rewardTag {
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(126, 231, 255, 0.12);
+  border: 1px solid rgba(126, 231, 255, 0.35);
+  color: #dff7ff;
+  font-size: 12px;
+  font-weight: 900;
+}
 
-      .app {
-        width: 100%;
-      }
+@media (max-width: 430px) {
+  body {
+    padding: 6px;
+  }
 
-      .logo {
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
-      }
+  .app {
+    width: 100%;
+  }
 
-      h1 {
-        font-size: 19px;
-      }
+  .logo {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
 
-      .sub {
-        font-size: 11px;
-      }
+  h1 {
+    font-size: 19px;
+  }
 
-      .pill {
-        font-size: 10px;
-        padding: 7px 8px;
-      }
+  .sub {
+    font-size: 11px;
+  }
 
-      .panel {
-        padding: 8px;
-      }
+  .pill {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
 
-      .hud {
-        gap: 5px;
-      }
+  .panel {
+    padding: 8px;
+  }
 
-      .stat {
-        min-height: 47px;
-        padding: 7px;
-      }
+  .hud {
+    gap: 5px;
+  }
 
-      .stat span {
-        font-size: 15px;
-      }
+  .stat {
+    min-height: 47px;
+    padding: 7px;
+  }
 
-      .controls {
-        max-width: 230px;
-      }
+  .stat span {
+    font-size: 15px;
+  }
 
-      .ctrl {
-        height: 43px;
-      }
-    }
-  </style>
+  .controls {
+    max-width: 230px;
+  }
+
+  .ctrl {
+    height: 43px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <div class="top">
-      <div class="brand">
-        <div class="logo">M</div>
-        <div>
-          <h1>Marino Maze</h1>
-          <div class="sub">Nostaljik ödül avı</div>
-        </div>
+
+<div class="app">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>Marino Maze</h1>
+        <div class="sub">Nostaljik ödül avı</div>
       </div>
-      <div class="pill">FS / FB AVCISI</div>
     </div>
 
-    <div class="panel">
-      <div class="hud">
-        <div class="stat">
-          <b>SKOR</b>
-          <span id="score">0</span>
-        </div>
-
-        <div class="stat">
-          <b>CAN</b>
-          <span id="lives">3</span>
-        </div>
-
-        <div class="stat">
-          <b>LEVEL</b>
-          <span id="level">1</span>
-        </div>
-
-        <div class="stat">
-          <b>ÖDÜL</b>
-          <span id="rewardCount">0</span>
-        </div>
-      </div>
-
-      <div class="gameWrap">
-        <canvas id="game" width="456" height="504"></canvas>
-
-        <div id="startScreen" class="startScreen">
-          <div class="startBox">
-            <h2 id="startTitle">Marino Maze</h2>
-            <p id="startText">
-              Sarı noktaları topla. Mavi kapsülü alınca hayaletleri yakala.
-              Hayaletlerden nadiren FS / FB kapsülü düşer. Ödülü yakalayamazsan sayılmaz.
-            </p>
-
-            <input id="siteUsername" type="text" placeholder="Site kullanıcı adını yaz" />
-
-            <button id="startBtn" class="startBtn">
-              OYUNU BAŞLAT
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="ctrl up" id="upBtn">▲</button>
-        <button class="ctrl left" id="leftBtn">◀</button>
-        <button class="ctrl mid" id="midBtn">●</button>
-        <button class="ctrl right" id="rightBtn">▶</button>
-        <button class="ctrl down" id="downBtn">▼</button>
-      </div>
-
-      <div id="message" class="message">
-        Hazır. Başlat butonuna bas. 3 saniye geri sayımdan sonra oyun başlayacak.
-      </div>
-
-      <div id="rewardList" class="rewardList"></div>
-    </div>
+    <div class="pill">FS / FB AVCISI</div>
   </div>
 
-  <script>
-    const CONFIG = {
-      GAME_NAME: "Marino Maze",
-      GAME_VERSION: "maze-grid-022",
-      SHEETS_WEBAPP_URL: "https://script.google.com/macros/s/AKfycbwbopRtD6acLzL5HKZCyw5UVuXZB_6dHyXBsHalhzr-5fOFkAaaMu6gcFll6xmc-vnt/exec",
-      SHEETS_API_SECRET: "",
-      MAX_REWARDS_PER_GAME: 1,
-      REWARD_DROP_CHANCE: 0.18
-    };
+  <div class="panel">
+    <div class="hud">
+      <div class="stat">
+        <b>SKOR</b>
+        <span id="score">0</span>
+      </div>
 
-    if (window.Telegram && window.Telegram.WebApp) {
-      try {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
+      <div class="stat">
+        <b>CAN</b>
+        <span id="lives">3</span>
+      </div>
 
-        if (typeof window.Telegram.WebApp.disableVerticalSwipes === "function") {
-          window.Telegram.WebApp.disableVerticalSwipes();
-        }
-      } catch (e) {}
+      <div class="stat">
+        <b>LEVEL</b>
+        <span id="level">1</span>
+      </div>
+
+      <div class="stat">
+        <b>ÖDÜL</b>
+        <span id="rewardCount">0</span>
+      </div>
+    </div>
+
+    <div class="gameWrap">
+      <canvas id="game" width="456" height="504"></canvas>
+
+      <div id="startScreen" class="startScreen">
+        <div class="startBox">
+          <h2 id="startTitle">Marino Maze</h2>
+
+          <p id="startText">
+            Sarı noktaları topla. Mavi kapsülü alınca hayaletleri yakala.
+            Hayaletlerden nadiren FS / FB kapsülü düşer.
+          </p>
+
+          <input id="siteUsername" type="text" placeholder="Site kullanıcı adını yaz">
+
+          <button id="startBtn" class="startBtn">
+            OYUNU BAŞLAT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl up" id="upBtn">▲</button>
+      <button class="ctrl left" id="leftBtn">◀</button>
+      <button class="ctrl mid" id="midBtn">●</button>
+      <button class="ctrl right" id="rightBtn">▶</button>
+      <button class="ctrl down" id="downBtn">▼</button>
+    </div>
+
+    <div id="message" class="message">
+      Hazır. Başlat butonuna bas. 3 saniye geri sayımdan sonra oyun başlayacak.
+    </div>
+
+    <div id="rewardList" class="rewardList"></div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  GAME_NAME: "Marino Maze",
+  GAME_VERSION: "maze-ghost-exit-fixed-001",
+
+  SHEETS_WEBAPP_URL: "https://script.google.com/macros/s/AKfycbwbopRtD6acLzL5HKZCyw5UVuXZB_6dHyXBsHalhzr-5fOFkAaaMu6gcFll6xmc-vnt/exec",
+
+  /*
+    Burası bilerek boş.
+    Secret'i GitHub HTML içine yazmak güvenli değil.
+    Şimdilik oyun ve ödül yakalama çalışsın.
+    Sheets güvenli kayıt işini sonra server mantığıyla toparlarız.
+  */
+  SHEETS_API_SECRET: "",
+
+  MAX_REWARDS_PER_GAME: 1,
+  REWARD_DROP_CHANCE: 0.18
+};
+
+if (window.Telegram && window.Telegram.WebApp) {
+  try {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+
+    if (typeof window.Telegram.WebApp.disableVerticalSwipes === "function") {
+      window.Telegram.WebApp.disableVerticalSwipes();
     }
-
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-
-    const scoreEl = document.getElementById("score");
-    const livesEl = document.getElementById("lives");
-    const levelEl = document.getElementById("level");
-    const rewardCountEl = document.getElementById("rewardCount");
-    const messageEl = document.getElementById("message");
-    const rewardListEl = document.getElementById("rewardList");
-    const startScreen = document.getElementById("startScreen");
-    const startTitle = document.getElementById("startTitle");
-    const startText = document.getElementById("startText");
-    const startBtn = document.getElementById("startBtn");
-    const usernameInput = document.getElementById("siteUsername");
-
-    const CELL = 24;
-    const COLS = 19;
-    const ROWS = 21;
-    const W = canvas.width;
-    const H = canvas.height;
-
-    const MAZE = [
-      "###################",
-      "#........#........#",
-      "#.##.###.#.###.##.#",
-      "#o##...........##o#",
-      "#.##.#.#####.#.##.#",
-      "#....#...#...#....#",
-      "####.###.#.###.####",
-      "#.................#",
-      "#.####.#####.####.#",
-      "#......#   #......#",
-      "#####.#     #.#####",
-      "#......#   #......#",
-      "#.####.#####.####.#",
-      "#.................#",
-      "####.###.#.###.####",
-      "#....#...#...#....#",
-      "#.##.#.#####.#.##.#",
-      "#o##...........##o#",
-      "#.##.###.#.###.##.#",
-      "#........#........#",
-      "###################"
-    ];
-
-    const DIR = {
-      none: { x: 0, y: 0, name: "none" },
-      up: { x: 0, y: -1, name: "up" },
-      down: { x: 0, y: 1, name: "down" },
-      left: { x: -1, y: 0, name: "left" },
-      right: { x: 1, y: 0, name: "right" }
-    };
-
-    let state = "idle";
-    let lastFrameTime = performance.now();
-    let countdownText = "";
-
-    let username = "test_user";
-    let sessionId = "";
-    let gameStartedAt = 0;
-
-    let score = 0;
-    let lives = 3;
-    let level = 1;
-
-    let pellets = [];
-    let powerUntil = 0;
-    let player = null;
-    let ghosts = [];
-    let rewardDrops = [];
-    let rewardsCaught = [];
-    let particles = [];
-
-    let audioCtx = null;
-    let audioEnabled = false;
-    let musicTimer = null;
-    let musicStep = 0;
-
-    let swipeActive = false;
-    let swipeStartX = 0;
-    let swipeStartY = 0;
-
-    function setMessage(text) {
-      messageEl.textContent = text;
-    }
-
-    function updateHud() {
-      scoreEl.textContent = score;
-      livesEl.textContent = lives;
-      levelEl.textContent = level;
-      rewardCountEl.textContent = rewardsCaught.length;
-    }
-
-    function centerX(col) {
-      return col * CELL + CELL / 2;
-    }
-
-    function centerY(row) {
-      return row * CELL + CELL / 2;
-    }
-
-    function isWall(col, row) {
-      if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return true;
-      return MAZE[row][col] === "#";
-    }
-
-    function isOpen(col, row) {
-      return !isWall(col, row);
-    }
-
-    function opposite(dir) {
-      if (dir.name === "up") return DIR.down;
-      if (dir.name === "down") return DIR.up;
-      if (dir.name === "left") return DIR.right;
-      if (dir.name === "right") return DIR.left;
-      return DIR.none;
-    }
-
-    function canGo(entity, dir) {
-      if (!entity || !dir || dir.name === "none") return false;
-      return isOpen(entity.col + dir.x, entity.row + dir.y);
-    }
-
-    function makeEntity(col, row, options) {
-      return {
-        col,
-        row,
-        fromCol: col,
-        fromRow: row,
-        targetCol: col,
-        targetRow: row,
-        x: centerX(col),
-        y: centerY(row),
-        moving: false,
-        progress: 0,
-        dir: DIR.none,
-        wantedDir: DIR.none,
-        tileMs: options.tileMs || 150,
-        radius: options.radius || 8,
-        color: options.color || "#fff",
-        name: options.name || "entity",
-        spawnCol: col,
-        spawnRow: row,
-        deadUntil: 0,
-        mouth: 0
-      };
-    }
-
-    function startMove(entity, dir) {
-      if (!canGo(entity, dir)) {
-        entity.moving = false;
-        return false;
-      }
-
-      entity.fromCol = entity.col;
-      entity.fromRow = entity.row;
-      entity.targetCol = entity.col + dir.x;
-      entity.targetRow = entity.row + dir.y;
-      entity.progress = 0;
-      entity.dir = dir;
-      entity.moving = true;
-
-      return true;
-    }
-
-    function updateEntityMovement(entity, dt) {
-      if (!entity.moving) return false;
-
-      entity.progress += dt / entity.tileMs;
-
-      if (entity.progress >= 1) {
-        entity.col = entity.targetCol;
-        entity.row = entity.targetRow;
-        entity.x = centerX(entity.col);
-        entity.y = centerY(entity.row);
-        entity.progress = 0;
-        entity.moving = false;
-        return true;
-      }
-
-      const t = entity.progress;
-      const sx = centerX(entity.fromCol);
-      const sy = centerY(entity.fromRow);
-      const tx = centerX(entity.targetCol);
-      const ty = centerY(entity.targetRow);
-
-      entity.x = sx + (tx - sx) * t;
-      entity.y = sy + (ty - sy) * t;
-
-      return false;
-    }
-
-    function resetPellets() {
-      pellets = [];
-
-      for (let r = 0; r < ROWS; r++) {
-        pellets[r] = [];
-
-        for (let c = 0; c < COLS; c++) {
-          const ch = MAZE[r][c];
-
-          if (ch === ".") {
-            pellets[r][c] = "dot";
-          } else if (ch === "o") {
-            pellets[r][c] = "power";
-          } else {
-            pellets[r][c] = null;
-          }
-        }
-      }
-    }
-
-    function remainingPellets() {
-      let total = 0;
-
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (pellets[r][c]) total++;
-        }
-      }
-
-      return total;
-    }
-
-    function resetPositions() {
-      player = makeEntity(9, 17, {
-        tileMs: Math.max(105, 150 - level * 4),
-        radius: 9,
-        color: "#ffd34f",
-        name: "player"
-      });
-
-      player.dir = DIR.right;
-      player.wantedDir = DIR.right;
-
-      ghosts = [
-        makeEntity(8, 10, {
-          tileMs: Math.max(155, 235 - level * 8),
-          radius: 9,
-          color: "#ff5c8a",
-          name: "red"
-        }),
-
-        makeEntity(9, 10, {
-          tileMs: Math.max(165, 245 - level * 8),
-          radius: 9,
-          color: "#60e7ff",
-          name: "cyan"
-        }),
-
-        makeEntity(10, 10, {
-          tileMs: Math.max(170, 255 - level * 8),
-          radius: 9,
-          color: "#ffb84a",
-          name: "orange"
-        }),
-
-        makeEntity(9, 9, {
-          tileMs: Math.max(175, 260 - level * 8),
-          radius: 9,
-          color: "#b06cff",
-          name: "purple"
-        })
-      ];
-
-      ghosts.forEach(g => {
-        g.dir = randomGhostDirection(g);
-      });
-    }
-
-    function unlockAudio() {
-      try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        if (audioCtx.state === "suspended") {
-          audioCtx.resume();
-        }
-
-        audioEnabled = true;
-      } catch (e) {
-        audioEnabled = false;
-      }
-    }
-
-    function playTone(freq, duration, type = "square", volume = 0.025) {
-      if (!audioEnabled || !audioCtx) return;
-
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function soundStart() {
-      [392, 523, 659, 784].forEach((n, i) => {
-        setTimeout(() => playTone(n, 0.08, "square", 0.035), i * 90);
-      });
-    }
-
-    function soundDot() {
-      playTone(650, 0.035, "square", 0.012);
-    }
-
-    function soundPower() {
-      [330, 440, 660, 880, 990].forEach((n, i) => {
-        setTimeout(() => playTone(n, 0.065, "triangle", 0.035), i * 55);
-      });
-    }
-
-    function soundGhostEat() {
-      [220, 330, 440, 660].forEach((n, i) => {
-        setTimeout(() => playTone(n, 0.07, "square", 0.035), i * 65);
-      });
-    }
-
-    function soundRewardDrop() {
-      playTone(740, 0.08, "triangle", 0.04);
-      setTimeout(() => playTone(980, 0.08, "triangle", 0.04), 90);
-    }
-
-    function soundRewardCatch() {
-      [523, 659, 784, 988, 1174].forEach((n, i) => {
-        setTimeout(() => playTone(n, 0.085, "square", 0.043), i * 75);
-      });
-    }
-
-    function soundDamage() {
-      playTone(150, 0.12, "sawtooth", 0.05);
-      setTimeout(() => playTone(80, 0.15, "sawtooth", 0.04), 80);
-    }
-
-    function soundGameOver() {
-      [392, 294, 220, 146].forEach((n, i) => {
-        setTimeout(() => playTone(n, 0.17, "square", 0.043), i * 160);
-      });
-    }
-
-    function startMusic() {
-      stopMusic();
-
-      const motif = [
-        392, 523, 659, 784,
-        659, 523, 440, 523,
-        330, 392, 494, 587,
-        494, 392, 330, 262
-      ];
-
-      musicStep = 0;
-
-      function loop() {
-        if (!musicTimer) return;
-
-        if (state === "playing") {
-          const n = motif[musicStep % motif.length];
-
-          playTone(n, 0.055, "square", 0.008);
-          playTone(n / 2, 0.075, "triangle", 0.004);
-
-          if (musicStep % 8 === 0) {
-            playTone(98, 0.07, "square", 0.007);
-          }
-
-          musicStep++;
-        }
-
-        musicTimer = setTimeout(loop, 115);
-      }
-
-      musicTimer = setTimeout(loop, 150);
-    }
-
-    function stopMusic() {
-      if (musicTimer) {
-        clearTimeout(musicTimer);
-        musicTimer = null;
+  } catch (e) {}
+}
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+const levelEl = document.getElementById("level");
+const rewardCountEl = document.getElementById("rewardCount");
+const messageEl = document.getElementById("message");
+const rewardListEl = document.getElementById("rewardList");
+const startScreen = document.getElementById("startScreen");
+const startTitle = document.getElementById("startTitle");
+const startText = document.getElementById("startText");
+const startBtn = document.getElementById("startBtn");
+const usernameInput = document.getElementById("siteUsername");
+
+const CELL = 24;
+const COLS = 19;
+const ROWS = 21;
+const W = canvas.width;
+const H = canvas.height;
+
+/*
+  KRİTİK DÜZELTME BURADA:
+  Eski haritada hayalet evi kapalıydı.
+  8, 9, 10, 11. satırlarda orta çıkış açıldı.
+  Hayaletler artık ortadan dışarı çıkabilir.
+*/
+const MAZE = [
+  "###################",
+  "#........#........#",
+  "#.##.###.#.###.##.#",
+  "#o##...........##o#",
+  "#.##.#.#####.#.##.#",
+  "#....#...#...#....#",
+  "####.###.#.###.####",
+  "#.................#",
+  "#.####.......####.#",
+  "#......#...#......#",
+  "#####.#.....#.#####",
+  "#......#...#......#",
+  "#.####.#####.####.#",
+  "#.................#",
+  "####.###.#.###.####",
+  "#....#...#...#....#",
+  "#.##.#.#####.#.##.#",
+  "#o##...........##o#",
+  "#.##.###.#.###.##.#",
+  "#........#........#",
+  "###################"
+];
+
+const DIR = {
+  none: { x: 0, y: 0, name: "none" },
+  up: { x: 0, y: -1, name: "up" },
+  down: { x: 0, y: 1, name: "down" },
+  left: { x: -1, y: 0, name: "left" },
+  right: { x: 1, y: 0, name: "right" }
+};
+
+let state = "idle";
+let lastFrameTime = performance.now();
+let countdownText = "";
+
+let username = "test_user";
+let sessionId = "";
+let gameStartedAt = 0;
+
+let score = 0;
+let lives = 3;
+let level = 1;
+
+let pellets = [];
+let powerUntil = 0;
+
+let player = null;
+let ghosts = [];
+let rewardDrops = [];
+let rewardsCaught = [];
+let particles = [];
+
+let audioCtx = null;
+let audioEnabled = false;
+let musicTimer = null;
+let musicStep = 0;
+
+let swipeActive = false;
+let swipeStartX = 0;
+let swipeStartY = 0;
+
+function setMessage(text) {
+  messageEl.textContent = text;
+}
+
+function updateHud() {
+  scoreEl.textContent = score;
+  livesEl.textContent = lives;
+  levelEl.textContent = level;
+  rewardCountEl.textContent = rewardsCaught.length;
+}
+
+function centerX(col) {
+  return col * CELL + CELL / 2;
+}
+
+function centerY(row) {
+  return row * CELL + CELL / 2;
+}
+
+function isWall(col, row) {
+  if (col < 0 || row < 0 || col >= COLS || row >= ROWS) return true;
+  return MAZE[row][col] === "#";
+}
+
+function isOpen(col, row) {
+  return !isWall(col, row);
+}
+
+function opposite(dir) {
+  if (dir.name === "up") return DIR.down;
+  if (dir.name === "down") return DIR.up;
+  if (dir.name === "left") return DIR.right;
+  if (dir.name === "right") return DIR.left;
+  return DIR.none;
+}
+
+function canGo(entity, dir) {
+  if (!entity || !dir || dir.name === "none") return false;
+  return isOpen(entity.col + dir.x, entity.row + dir.y);
+}
+
+function makeEntity(col, row, options) {
+  return {
+    col,
+    row,
+    fromCol: col,
+    fromRow: row,
+    targetCol: col,
+    targetRow: row,
+    x: centerX(col),
+    y: centerY(row),
+    moving: false,
+    progress: 0,
+    dir: DIR.none,
+    wantedDir: DIR.none,
+    tileMs: options.tileMs || 150,
+    radius: options.radius || 8,
+    color: options.color || "#fff",
+    name: options.name || "entity",
+    spawnCol: col,
+    spawnRow: row,
+    deadUntil: 0,
+    mouth: 0
+  };
+}
+
+function startMove(entity, dir) {
+  if (!canGo(entity, dir)) {
+    entity.moving = false;
+    return false;
+  }
+
+  entity.fromCol = entity.col;
+  entity.fromRow = entity.row;
+  entity.targetCol = entity.col + dir.x;
+  entity.targetRow = entity.row + dir.y;
+  entity.progress = 0;
+  entity.dir = dir;
+  entity.moving = true;
+
+  return true;
+}
+
+function updateEntityMovement(entity, dt) {
+  if (!entity.moving) return false;
+
+  entity.progress += dt / entity.tileMs;
+
+  if (entity.progress >= 1) {
+    entity.col = entity.targetCol;
+    entity.row = entity.targetRow;
+    entity.x = centerX(entity.col);
+    entity.y = centerY(entity.row);
+    entity.progress = 0;
+    entity.moving = false;
+    return true;
+  }
+
+  const t = entity.progress;
+
+  const sx = centerX(entity.fromCol);
+  const sy = centerY(entity.fromRow);
+  const tx = centerX(entity.targetCol);
+  const ty = centerY(entity.targetRow);
+
+  entity.x = sx + (tx - sx) * t;
+  entity.y = sy + (ty - sy) * t;
+
+  return false;
+}
+
+function resetPellets() {
+  pellets = [];
+
+  for (let r = 0; r < ROWS; r++) {
+    pellets[r] = [];
+
+    for (let c = 0; c < COLS; c++) {
+      const ch = MAZE[r][c];
+
+      if (ch === ".") {
+        pellets[r][c] = "dot";
+      } else if (ch === "o") {
+        pellets[r][c] = "power";
+      } else {
+        pellets[r][c] = null;
       }
     }
+  }
+}
 
-    function prepareGame() {
-      username = usernameInput.value.trim() || "test_user";
-      sessionId = "MM-" + Date.now() + "-" + Math.floor(Math.random() * 999999);
-      gameStartedAt = Date.now();
+function remainingPellets() {
+  let total = 0;
 
-      score = 0;
-      lives = 3;
-      level = 1;
-      powerUntil = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (pellets[r][c]) total++;
+    }
+  }
 
-      rewardDrops = [];
-      rewardsCaught = [];
-      particles = [];
-      rewardListEl.innerHTML = "";
+  return total;
+}
 
-      resetPellets();
-      resetPositions();
-      updateHud();
+function resetPositions() {
+  player = makeEntity(9, 17, {
+    tileMs: Math.max(105, 150 - level * 4),
+    radius: 9,
+    color: "#ffd34f",
+    name: "player"
+  });
 
-      recordEvent("GAME_START", {
-        username,
-        sessionId
-      });
+  player.dir = DIR.right;
+  player.wantedDir = DIR.right;
+
+  ghosts = [
+    makeEntity(8, 10, {
+      tileMs: Math.max(155, 235 - level * 8),
+      radius: 9,
+      color: "#ff5c8a",
+      name: "red"
+    }),
+
+    makeEntity(9, 10, {
+      tileMs: Math.max(165, 245 - level * 8),
+      radius: 9,
+      color: "#60e7ff",
+      name: "cyan"
+    }),
+
+    makeEntity(10, 10, {
+      tileMs: Math.max(170, 255 - level * 8),
+      radius: 9,
+      color: "#ffb84a",
+      name: "orange"
+    }),
+
+    makeEntity(9, 9, {
+      tileMs: Math.max(175, 260 - level * 8),
+      radius: 9,
+      color: "#b06cff",
+      name: "purple"
+    })
+  ];
+
+  ghosts.forEach(g => {
+    g.dir = randomGhostDirection(g);
+  });
+}
+
+function unlockAudio() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
-    function startCountdown() {
-      unlockAudio();
-      prepareGame();
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
 
-      state = "countdown";
-      startScreen.style.display = "none";
-      setMessage("Hazırlan. 3 saniye sonra oyun başlıyor.");
+    audioEnabled = true;
+  } catch (e) {
+    audioEnabled = false;
+  }
+}
 
-      let n = 3;
+function playTone(freq, duration, type = "square", volume = 0.025) {
+  if (!audioEnabled || !audioCtx) return;
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+  gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function soundStart() {
+  [392, 523, 659, 784].forEach((n, i) => {
+    setTimeout(() => playTone(n, 0.08, "square", 0.035), i * 90);
+  });
+}
+
+function soundDot() {
+  playTone(650, 0.035, "square", 0.012);
+}
+
+function soundPower() {
+  [330, 440, 660, 880, 990].forEach((n, i) => {
+    setTimeout(() => playTone(n, 0.065, "triangle", 0.035), i * 55);
+  });
+}
+
+function soundGhostEat() {
+  [220, 330, 440, 660].forEach((n, i) => {
+    setTimeout(() => playTone(n, 0.07, "square", 0.035), i * 65);
+  });
+}
+
+function soundRewardDrop() {
+  playTone(740, 0.08, "triangle", 0.04);
+  setTimeout(() => playTone(980, 0.08, "triangle", 0.04), 90);
+}
+
+function soundRewardCatch() {
+  [523, 659, 784, 988, 1174].forEach((n, i) => {
+    setTimeout(() => playTone(n, 0.085, "square", 0.043), i * 75);
+  });
+}
+
+function soundDamage() {
+  playTone(150, 0.12, "sawtooth", 0.05);
+  setTimeout(() => playTone(80, 0.15, "sawtooth", 0.04), 80);
+}
+
+function soundGameOver() {
+  [392, 294, 220, 146].forEach((n, i) => {
+    setTimeout(() => playTone(n, 0.17, "square", 0.043), i * 160);
+  });
+}
+
+function startMusic() {
+  stopMusic();
+
+  const motif = [
+    392, 523, 659, 784,
+    659, 523, 440, 523,
+    330, 392, 494, 587,
+    494, 392, 330, 262
+  ];
+
+  musicStep = 0;
+
+  function loop() {
+    if (!musicTimer) return;
+
+    if (state === "playing") {
+      const n = motif[musicStep % motif.length];
+
+      playTone(n, 0.055, "square", 0.008);
+      playTone(n / 2, 0.075, "triangle", 0.004);
+
+      if (musicStep % 8 === 0) {
+        playTone(98, 0.07, "square", 0.007);
+      }
+
+      musicStep++;
+    }
+
+    musicTimer = setTimeout(loop, 115);
+  }
+
+  musicTimer = setTimeout(loop, 150);
+}
+
+function stopMusic() {
+  if (musicTimer) {
+    clearTimeout(musicTimer);
+    musicTimer = null;
+  }
+}
+
+function prepareGame() {
+  username = usernameInput.value.trim() || "test_user";
+  sessionId = "MM-" + Date.now() + "-" + Math.floor(Math.random() * 999999);
+  gameStartedAt = Date.now();
+
+  score = 0;
+  lives = 3;
+  level = 1;
+  powerUntil = 0;
+
+  rewardDrops = [];
+  rewardsCaught = [];
+  particles = [];
+  rewardListEl.innerHTML = "";
+
+  resetPellets();
+  resetPositions();
+  updateHud();
+
+  recordEvent("GAME_START", {
+    username,
+    sessionId
+  });
+}
+
+function startCountdown() {
+  unlockAudio();
+  prepareGame();
+
+  state = "countdown";
+  startScreen.style.display = "none";
+  setMessage("Hazırlan. 3 saniye sonra oyun başlıyor.");
+
+  let n = 3;
+  countdownText = String(n);
+  playTone(620, 0.07, "square", 0.035);
+
+  const timer = setInterval(() => {
+    n--;
+
+    if (n > 0) {
       countdownText = String(n);
       playTone(620, 0.07, "square", 0.035);
+      setMessage("Başlıyor: " + n);
+    } else if (n === 0) {
+      countdownText = "BAŞLA!";
+      soundStart();
+      setMessage("Başla!");
+    } else {
+      clearInterval(timer);
+      countdownText = "";
+      state = "playing";
+      lastFrameTime = performance.now();
+      startMusic();
+      setMessage("Oyun başladı. Mobilde kaydırarak, bilgisayarda ok tuşlarıyla yön ver.");
+    }
+  }, 1000);
+}
 
-      const timer = setInterval(() => {
-        n--;
+function setDirection(dir) {
+  if (!player) return;
+  player.wantedDir = dir;
+}
 
-        if (n > 0) {
-          countdownText = String(n);
-          playTone(620, 0.07, "square", 0.035);
-          setMessage("Başlıyor: " + n);
-        } else if (n === 0) {
-          countdownText = "BAŞLA!";
-          soundStart();
-          setMessage("Başla!");
-        } else {
-          clearInterval(timer);
-          countdownText = "";
-          state = "playing";
-          lastFrameTime = performance.now();
-          startMusic();
-          setMessage("Oyun başladı. Mobilde kaydırarak, bilgisayarda ok tuşlarıyla yön ver.");
-        }
-      }, 1000);
+function updateGame(dt) {
+  updatePlayer(dt);
+  updateGhosts(dt);
+  updateRewards(dt);
+  updateParticles(dt);
+  checkGhostCollisions();
+  checkRewardCollisions();
+
+  if (remainingPellets() <= 0) {
+    nextLevel();
+  }
+
+  updateHud();
+}
+
+function updatePlayer(dt) {
+  if (!player) return;
+
+  player.mouth += dt * 0.012;
+
+  const arrived = updateEntityMovement(player, dt);
+
+  if (arrived) {
+    collectCurrentTile();
+  }
+
+  if (!player.moving) {
+    if (canGo(player, player.wantedDir)) {
+      startMove(player, player.wantedDir);
+      return;
     }
 
-    function setDirection(dir) {
-      if (!player) return;
-      player.wantedDir = dir;
+    if (canGo(player, player.dir)) {
+      startMove(player, player.dir);
+      return;
     }
 
-    function updateGame(dt) {
-      updatePlayer(dt);
-      updateGhosts(dt);
-      updateRewards(dt);
-      updateParticles(dt);
-      checkGhostCollisions();
-      checkRewardCollisions();
+    player.dir = DIR.none;
+  }
+}
 
-      if (remainingPellets() <= 0) {
-        nextLevel();
+function collectCurrentTile() {
+  if (!player) return;
+
+  const item = pellets[player.row] && pellets[player.row][player.col];
+
+  if (!item) return;
+
+  pellets[player.row][player.col] = null;
+
+  if (item === "dot") {
+    score += 10;
+    soundDot();
+  }
+
+  if (item === "power") {
+    score += 80;
+    powerUntil = Date.now() + Math.max(4500, 7800 - level * 450);
+    soundPower();
+    setMessage("Güç modu aktif! Hayaletleri yakala, nadir ödül kapsülü düşebilir.");
+  }
+}
+
+function updateGhosts(dt) {
+  for (const g of ghosts) {
+    if (Date.now() < g.deadUntil) {
+      const dx = centerX(g.spawnCol) - g.x;
+      const dy = centerY(g.spawnRow) - g.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist > 2) {
+        g.x += (dx / dist) * 0.16 * dt;
+        g.y += (dy / dist) * 0.16 * dt;
+      } else {
+        g.col = g.spawnCol;
+        g.row = g.spawnRow;
+        g.x = centerX(g.col);
+        g.y = centerY(g.row);
+        g.deadUntil = 0;
+        g.moving = false;
+        g.dir = randomGhostDirection(g);
       }
 
-      updateHud();
+      continue;
     }
 
-    function updatePlayer(dt) {
-      if (!player) return;
+    const arrived = updateEntityMovement(g, dt);
 
-      player.mouth += dt * 0.012;
-
-      const arrived = updateEntityMovement(player, dt);
-
-      if (arrived) {
-        collectCurrentTile();
-      }
-
-      if (!player.moving) {
-        if (canGo(player, player.wantedDir)) {
-          startMove(player, player.wantedDir);
-          return;
-        }
-
-        if (canGo(player, player.dir)) {
-          startMove(player, player.dir);
-          return;
-        }
-
-        player.dir = DIR.none;
-      }
+    if (!g.moving || arrived) {
+      const dir = smartGhostDirection(g);
+      startMove(g, dir);
     }
+  }
+}
 
-    function collectCurrentTile() {
-      if (!player) return;
+function legalDirs(entity) {
+  return [DIR.up, DIR.down, DIR.left, DIR.right].filter(d => canGo(entity, d));
+}
 
-      const item = pellets[player.row] && pellets[player.row][player.col];
+function randomGhostDirection(entity) {
+  const dirs = legalDirs(entity);
 
-      if (!item) return;
+  if (!dirs.length) return DIR.none;
 
-      pellets[player.row][player.col] = null;
+  return dirs[Math.floor(Math.random() * dirs.length)];
+}
 
-      if (item === "dot") {
-        score += 10;
-        soundDot();
-      }
+function smartGhostDirection(g) {
+  let dirs = legalDirs(g);
 
-      if (item === "power") {
-        score += 80;
-        powerUntil = Date.now() + Math.max(4500, 7800 - level * 450);
-        soundPower();
-        setMessage("Güç modu aktif! Hayaletleri yakala, nadir ödül kapsülü düşebilir.");
-      }
-    }
+  if (!dirs.length) return DIR.none;
 
-    function updateGhosts(dt) {
-      for (const g of ghosts) {
-        if (Date.now() < g.deadUntil) {
-          const dx = centerX(g.spawnCol) - g.x;
-          const dy = centerY(g.spawnRow) - g.y;
-          const dist = Math.hypot(dx, dy);
+  const reverse = opposite(g.dir);
 
-          if (dist > 2) {
-            g.x += (dx / dist) * 0.16 * dt;
-            g.y += (dy / dist) * 0.16 * dt;
-          } else {
-            g.col = g.spawnCol;
-            g.row = g.spawnRow;
-            g.x = centerX(g.col);
-            g.y = centerY(g.row);
-            g.deadUntil = 0;
-            g.moving = false;
-            g.dir = randomGhostDirection(g);
-          }
+  if (dirs.length > 1 && reverse.name !== "none") {
+    dirs = dirs.filter(d => d.name !== reverse.name);
+  }
 
-          continue;
-        }
+  const vulnerable = Date.now() < powerUntil;
 
-        const arrived = updateEntityMovement(g, dt);
+  if (Math.random() < 0.24) {
+    return dirs[Math.floor(Math.random() * dirs.length)];
+  }
 
-        if (!g.moving || arrived) {
-          const dir = smartGhostDirection(g);
-          startMove(g, dir);
-        }
-      }
-    }
+  dirs.sort((a, b) => {
+    const ax = g.col + a.x;
+    const ay = g.row + a.y;
+    const bx = g.col + b.x;
+    const by = g.row + b.y;
 
-    function legalDirs(entity) {
-      return [DIR.up, DIR.down, DIR.left, DIR.right].filter(d => canGo(entity, d));
-    }
+    const da = Math.abs(ax - player.col) + Math.abs(ay - player.row);
+    const db = Math.abs(bx - player.col) + Math.abs(by - player.row);
 
-    function randomGhostDirection(entity) {
-      const dirs = legalDirs(entity);
+    return vulnerable ? db - da : da - db;
+  });
 
-      if (!dirs.length) return DIR.none;
+  return dirs[0];
+}
 
-      return dirs[Math.floor(Math.random() * dirs.length)];
-    }
+function checkGhostCollisions() {
+  if (!player) return;
 
-    function smartGhostDirection(g) {
-      let dirs = legalDirs(g);
+  const vulnerable = Date.now() < powerUntil;
 
-      if (!dirs.length) return DIR.none;
+  for (const g of ghosts) {
+    if (Date.now() < g.deadUntil) continue;
 
-      const reverse = opposite(g.dir);
+    const dist = Math.hypot(g.x - player.x, g.y - player.y);
 
-      if (dirs.length > 1 && reverse.name !== "none") {
-        dirs = dirs.filter(d => d.name !== reverse.name);
-      }
-
-      const vulnerable = Date.now() < powerUntil;
-
-      if (Math.random() < 0.24) {
-        return dirs[Math.floor(Math.random() * dirs.length)];
-      }
-
-      dirs.sort((a, b) => {
-        const ax = g.col + a.x;
-        const ay = g.row + a.y;
-        const bx = g.col + b.x;
-        const by = g.row + b.y;
-
-        const da = Math.abs(ax - player.col) + Math.abs(ay - player.row);
-        const db = Math.abs(bx - player.col) + Math.abs(by - player.row);
-
-        return vulnerable ? db - da : da - db;
-      });
-
-      return dirs[0];
-    }
-
-    function checkGhostCollisions() {
-      if (!player) return;
-
-      const vulnerable = Date.now() < powerUntil;
-
-      for (const g of ghosts) {
-        if (Date.now() < g.deadUntil) continue;
-
-        const dist = Math.hypot(g.x - player.x, g.y - player.y);
-
-        if (dist < 15) {
-          if (vulnerable) {
-            eatGhost(g);
-          } else {
-            loseLife();
-            return;
-          }
-        }
-      }
-    }
-
-    function eatGhost(g) {
-      score += 220;
-      g.deadUntil = Date.now() + 1200;
-      g.moving = false;
-      g.progress = 0;
-
-      explode(g.x, g.y, "#7ee7ff");
-      soundGhostEat();
-      maybeDropReward(g);
-    }
-
-    function maybeDropReward(g) {
-      if (rewardsCaught.length >= CONFIG.MAX_REWARDS_PER_GAME) return;
-      if (rewardDrops.length >= 1) return;
-
-      if (Math.random() > CONFIG.REWARD_DROP_CHANCE) {
-        setMessage("Hayalet yakalandı ama ödül düşmedi. Devam.");
+    if (dist < 15) {
+      if (vulnerable) {
+        eatGhost(g);
+      } else {
+        loseLife();
         return;
       }
-
-      const type = Math.random() < 0.5 ? "FREESPIN" : "FREEBET";
-      const amount = type === "FREESPIN"
-        ? [10, 20, 25, 50][Math.floor(Math.random() * 4)]
-        : [25, 50, 100][Math.floor(Math.random() * 3)];
-
-      const label = amount + " " + type;
-
-      rewardDrops.push({
-        id: "DROP-" + Date.now(),
-        x: g.x,
-        y: g.y,
-        type,
-        amount,
-        label,
-        ttl: 6800,
-        spin: 0,
-        dead: false
-      });
-
-      soundRewardDrop();
-      setMessage("Ödül kapsülü düştü: " + label + ". Kaybolmadan yakala!");
     }
+  }
+}
 
-    function updateRewards(dt) {
-      for (const r of rewardDrops) {
-        r.ttl -= dt;
-        r.spin += dt * 0.006;
+function eatGhost(g) {
+  score += 220;
+  g.deadUntil = Date.now() + 1200;
+  g.moving = false;
+  g.progress = 0;
 
-        if (r.ttl <= 0) {
-          r.dead = true;
-          setMessage(r.label + " ödülü kaçtı. Yakalanmayan ödül sayılmaz.");
-        }
-      }
+  explode(g.x, g.y, "#7ee7ff");
+  soundGhostEat();
+  maybeDropReward(g);
+}
 
-      rewardDrops = rewardDrops.filter(r => !r.dead);
+function maybeDropReward(g) {
+  if (rewardsCaught.length >= CONFIG.MAX_REWARDS_PER_GAME) return;
+  if (rewardDrops.length >= 1) return;
+
+  if (Math.random() > CONFIG.REWARD_DROP_CHANCE) {
+    setMessage("Hayalet yakalandı ama ödül düşmedi. Devam.");
+    return;
+  }
+
+  const type = Math.random() < 0.5 ? "FREESPIN" : "FREEBET";
+  const amount = type === "FREESPIN"
+    ? [10, 20, 25, 50][Math.floor(Math.random() * 4)]
+    : [25, 50, 100][Math.floor(Math.random() * 3)];
+
+  const label = amount + " " + type;
+
+  rewardDrops.push({
+    id: "DROP-" + Date.now(),
+    x: g.x,
+    y: g.y,
+    type,
+    amount,
+    label,
+    ttl: 6800,
+    spin: 0,
+    dead: false
+  });
+
+  soundRewardDrop();
+  setMessage("Ödül kapsülü düştü: " + label + ". Kaybolmadan yakala!");
+}
+
+function updateRewards(dt) {
+  for (const r of rewardDrops) {
+    r.ttl -= dt;
+    r.spin += dt * 0.006;
+
+    if (r.ttl <= 0) {
+      r.dead = true;
+      setMessage(r.label + " ödülü kaçtı. Yakalanmayan ödül sayılmaz.");
     }
+  }
 
-    function checkRewardCollisions() {
-      if (!player) return;
+  rewardDrops = rewardDrops.filter(r => !r.dead);
+}
 
-      for (const r of rewardDrops) {
-        const dist = Math.hypot(r.x - player.x, r.y - player.y);
+function checkRewardCollisions() {
+  if (!player) return;
 
-        if (dist < 20) {
-          r.dead = true;
+  for (const r of rewardDrops) {
+    const dist = Math.hypot(r.x - player.x, r.y - player.y);
 
-          const rewardData = {
-            username,
-            sessionId,
-            type: r.type,
-            amount: r.amount,
-            label: r.label,
-            score,
-            level,
-            status: "PENDING",
-            createdAt: new Date().toISOString()
-          };
+    if (dist < 20) {
+      r.dead = true;
 
-          rewardsCaught.push(rewardData);
-          score += 500;
-
-          soundRewardCatch();
-          explode(r.x, r.y, "#ffe28a");
-
-          const tag = document.createElement("div");
-          tag.className = "rewardTag";
-          tag.textContent = r.label;
-          rewardListEl.appendChild(tag);
-
-          recordEvent("REWARD_CAUGHT", rewardData);
-
-          setMessage("Ödül yakalandı: " + r.label + ". Kayıt durumu: PENDING.");
-        }
-      }
-
-      rewardDrops = rewardDrops.filter(r => !r.dead);
-    }
-
-    function loseLife() {
-      lives--;
-      soundDamage();
-      explode(player.x, player.y, "#ff7070");
-
-      if (lives <= 0) {
-        endGame("Can bitti. Oyun bitti.");
-        return;
-      }
-
-      setMessage("Hayalete yakalandın. Kalan can: " + lives);
-
-      powerUntil = 0;
-      resetPositions();
-    }
-
-    function nextLevel() {
-      level++;
-      score += 700;
-      powerUntil = 0;
-      rewardDrops = [];
-
-      resetPellets();
-      resetPositions();
-
-      setMessage("Labirent temizlendi. Yeni level başladı.");
-    }
-
-    function endGame(text) {
-      state = "gameover";
-      stopMusic();
-      soundGameOver();
-      updateHud();
-
-      recordEvent("GAME_END", {
+      const rewardData = {
         username,
         sessionId,
+        type: r.type,
+        amount: r.amount,
+        label: r.label,
         score,
         level,
-        lives,
-        rewards: rewardsCaught,
-        durationSeconds: Math.round((Date.now() - gameStartedAt) / 1000)
-      });
+        status: "PENDING",
+        createdAt: new Date().toISOString()
+      };
 
-      setMessage(text + " Skor: " + score + ".");
+      rewardsCaught.push(rewardData);
+      score += 500;
 
-      startTitle.textContent = "Oyun Bitti";
-      startText.textContent = "Skor: " + score + " | Kazanılan ödül: " + rewardsCaught.length + ". Tekrar oynamak için butona bas.";
-      startBtn.textContent = "TEKRAR OYNA";
-      startScreen.style.display = "grid";
+      soundRewardCatch();
+      explode(r.x, r.y, "#ffe28a");
+
+      const tag = document.createElement("div");
+      tag.className = "rewardTag";
+      tag.textContent = r.label;
+      rewardListEl.appendChild(tag);
+
+      recordEvent("REWARD_CAUGHT", rewardData);
+
+      setMessage("Ödül yakalandı: " + r.label + ". Kayıt durumu: PENDING.");
     }
+  }
 
-    function explode(x, y, color) {
-      for (let i = 0; i < 18; i++) {
-        particles.push({
-          x,
-          y,
-          vx: (Math.random() - 0.5) * 5,
-          vy: (Math.random() - 0.5) * 5,
-          life: 1,
-          color
-        });
-      }
-    }
+  rewardDrops = rewardDrops.filter(r => !r.dead);
+}
 
-    function updateParticles(dt) {
-      for (const p of particles) {
-        p.x += p.vx * dt * 0.06;
-        p.y += p.vy * dt * 0.06;
-        p.life -= dt * 0.0018;
-      }
+function loseLife() {
+  lives--;
+  soundDamage();
+  explode(player.x, player.y, "#ff7070");
 
-      particles = particles.filter(p => p.life > 0);
-    }
+  if (lives <= 0) {
+    endGame("Can bitti. Oyun bitti.");
+    return;
+  }
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
+  setMessage("Hayalete yakalandın. Kalan can: " + lives);
 
-      drawBackground();
-      drawMaze();
-      drawPellets();
-      drawRewardDrops();
-      drawGhosts();
-      drawPlayer();
-      drawParticles();
+  powerUntil = 0;
+  resetPositions();
+}
 
-      if (state === "countdown") {
-        drawCountdown();
-      }
+function nextLevel() {
+  level++;
+  score += 700;
+  powerUntil = 0;
+  rewardDrops = [];
 
-      drawVersion();
-    }
+  resetPellets();
+  resetPositions();
 
-    function drawBackground() {
-      const g = ctx.createLinearGradient(0, 0, 0, H);
-      g.addColorStop(0, "#020a18");
-      g.addColorStop(1, "#00040b");
+  setMessage("Labirent temizlendi. Yeni level başladı.");
+}
 
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
+function endGame(text) {
+  state = "gameover";
+  stopMusic();
+  soundGameOver();
+  updateHud();
 
-      ctx.fillStyle = "rgba(255,255,255,0.32)";
+  recordEvent("GAME_END", {
+    username,
+    sessionId,
+    score,
+    level,
+    lives,
+    rewards: rewardsCaught,
+    durationSeconds: Math.round((Date.now() - gameStartedAt) / 1000)
+  });
 
-      for (let i = 0; i < 70; i++) {
-        const x = (i * 71 + Date.now() * 0.012) % W;
-        const y = (i * 47 + Date.now() * 0.016) % H;
-        ctx.fillRect(x, y, 1.05, 1.05);
-      }
-    }
+  setMessage(text + " Skor: " + score + ".");
 
-    function drawMaze() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (MAZE[r][c] !== "#") continue;
+  startTitle.textContent = "Oyun Bitti";
+  startText.textContent = "Skor: " + score + " | Kazanılan ödül: " + rewardsCaught.length + ". Tekrar oynamak için butona bas.";
+  startBtn.textContent = "TEKRAR OYNA";
+  startScreen.style.display = "grid";
+}
 
-          const x = c * CELL;
-          const y = r * CELL;
+function explode(x, y, color) {
+  for (let i = 0; i < 18; i++) {
+    particles.push({
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 5,
+      vy: (Math.random() - 0.5) * 5,
+      life: 1,
+      color
+    });
+  }
+}
 
-          ctx.save();
-          ctx.shadowColor = "#1ca8ff";
-          ctx.shadowBlur = 9;
-          ctx.fillStyle = "rgba(23, 89, 190, 0.58)";
-          roundedRect(x + 2, y + 2, CELL - 4, CELL - 4, 7);
-          ctx.fill();
+function updateParticles(dt) {
+  for (const p of particles) {
+    p.x += p.vx * dt * 0.06;
+    p.y += p.vy * dt * 0.06;
+    p.life -= dt * 0.0018;
+  }
 
-          ctx.shadowBlur = 0;
-          ctx.strokeStyle = "rgba(126, 231, 255, 0.32)";
-          ctx.lineWidth = 1;
-          roundedRect(x + 2.5, y + 2.5, CELL - 5, CELL - 5, 7);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-    }
+  particles = particles.filter(p => p.life > 0);
+}
 
-    function drawPellets() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const item = pellets[r][c];
-          if (!item) continue;
+function draw() {
+  ctx.clearRect(0, 0, W, H);
 
-          const x = centerX(c);
-          const y = centerY(r);
+  drawBackground();
+  drawMaze();
+  drawPellets();
+  drawRewardDrops();
+  drawGhosts();
+  drawPlayer();
+  drawParticles();
 
-          ctx.save();
+  if (state === "countdown") {
+    drawCountdown();
+  }
 
-          if (item === "dot") {
-            ctx.fillStyle = "rgba(255, 230, 150, 0.92)";
-            ctx.shadowColor = "#ffe28a";
-            ctx.shadowBlur = 7;
-            ctx.beginPath();
-            ctx.arc(x, y, 2.6, 0, Math.PI * 2);
-            ctx.fill();
-          }
+  drawVersion();
+}
 
-          if (item === "power") {
-            const pulse = 1.8 + Math.sin(Date.now() / 120) * 1.4;
+function drawBackground() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#020a18");
+  g.addColorStop(1, "#00040b");
 
-            ctx.fillStyle = "#7ee7ff";
-            ctx.shadowColor = "#7ee7ff";
-            ctx.shadowBlur = 18;
-            ctx.beginPath();
-            ctx.arc(x, y, 7 + pulse, 0, Math.PI * 2);
-            ctx.fill();
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
 
-            ctx.fillStyle = "#03101f";
-            ctx.font = "900 9px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("M", x, y + 1);
-          }
+  ctx.fillStyle = "rgba(255,255,255,0.32)";
 
-          ctx.restore();
-        }
-      }
-    }
+  for (let i = 0; i < 70; i++) {
+    const x = (i * 71 + Date.now() * 0.012) % W;
+    const y = (i * 47 + Date.now() * 0.016) % H;
+    ctx.fillRect(x, y, 1.05, 1.05);
+  }
+}
 
-    function drawPlayer() {
-      if (!player) return;
+function drawMaze() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (MAZE[r][c] !== "#") continue;
 
-      const mouthOpen = 0.22 + Math.abs(Math.sin(player.mouth)) * 0.28;
-      let angle = 0;
-
-      if (player.dir.name === "right") angle = 0;
-      if (player.dir.name === "down") angle = Math.PI / 2;
-      if (player.dir.name === "left") angle = Math.PI;
-      if (player.dir.name === "up") angle = -Math.PI / 2;
+      const x = c * CELL;
+      const y = r * CELL;
 
       ctx.save();
-      ctx.translate(player.x, player.y);
-      ctx.rotate(angle);
-
-      ctx.shadowColor = "#ffe28a";
-      ctx.shadowBlur = 16;
-      ctx.fillStyle = "#ffcf4a";
-
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 0, player.radius + 2, mouthOpen, Math.PI * 2 - mouthOpen);
-      ctx.closePath();
+      ctx.shadowColor = "#1ca8ff";
+      ctx.shadowBlur = 9;
+      ctx.fillStyle = "rgba(23, 89, 190, 0.58)";
+      roundedRect(x + 2, y + 2, CELL - 4, CELL - 4, 7);
       ctx.fill();
 
       ctx.shadowBlur = 0;
-      ctx.fillStyle = "#03101f";
-      ctx.font = "900 8px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.rotate(-angle);
-      ctx.fillText("M", 0, 1);
-
+      ctx.strokeStyle = "rgba(126, 231, 255, 0.32)";
+      ctx.lineWidth = 1;
+      roundedRect(x + 2.5, y + 2.5, CELL - 5, CELL - 5, 7);
+      ctx.stroke();
       ctx.restore();
     }
+  }
+}
 
-    function drawGhosts() {
-      const vulnerable = Date.now() < powerUntil;
+function drawPellets() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const item = pellets[r][c];
 
-      for (const g of ghosts) {
-        if (Date.now() < g.deadUntil) {
-          ctx.save();
-          ctx.globalAlpha = 0.35;
-          ctx.fillStyle = "#ffffff";
-          ctx.beginPath();
-          ctx.arc(g.x, g.y, 4.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-          continue;
-        }
+      if (!item) continue;
 
-        ctx.save();
+      const x = centerX(c);
+      const y = centerY(r);
 
-        const color = vulnerable ? "#2f74ff" : g.color;
-        const pulse = Math.sin(Date.now() / 120 + g.x) * 1.2;
+      ctx.save();
 
-        ctx.translate(g.x, g.y + pulse);
-
-        ctx.shadowColor = color;
-        ctx.shadowBlur = vulnerable ? 22 : 15;
-        ctx.fillStyle = color;
-
+      if (item === "dot") {
+        ctx.fillStyle = "rgba(255, 230, 150, 0.92)";
+        ctx.shadowColor = "#ffe28a";
+        ctx.shadowBlur = 7;
         ctx.beginPath();
-        ctx.arc(0, -2, g.radius + 2, Math.PI, 0);
-        ctx.lineTo(g.radius + 2, g.radius + 4);
-        ctx.lineTo(g.radius / 2, g.radius);
-        ctx.lineTo(0, g.radius + 4);
-        ctx.lineTo(-g.radius / 2, g.radius);
-        ctx.lineTo(-g.radius - 2, g.radius + 4);
-        ctx.closePath();
+        ctx.arc(x, y, 2.6, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(-3.5, -3, 2.6, 0, Math.PI * 2);
-        ctx.arc(4.5, -3, 2.6, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#03101f";
-        ctx.beginPath();
-        ctx.arc(-3, -3, 1.2, 0, Math.PI * 2);
-        ctx.arc(5, -3, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
       }
-    }
 
-    function drawRewardDrops() {
-      for (const r of rewardDrops) {
-        ctx.save();
+      if (item === "power") {
+        const pulse = 1.8 + Math.sin(Date.now() / 120) * 1.4;
 
-        const pulse = Math.sin(Date.now() / 100) * 2;
-
-        ctx.translate(r.x, r.y + pulse);
-        ctx.rotate(Math.sin(r.spin) * 0.25);
-
-        ctx.shadowColor = r.type === "FREEBET" ? "#ffe28a" : "#7ee7ff";
-        ctx.shadowBlur = 22;
-
-        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 20);
-
-        if (r.type === "FREEBET") {
-          gradient.addColorStop(0, "#fff3ba");
-          gradient.addColorStop(1, "#ffb93d");
-        } else {
-          gradient.addColorStop(0, "#dff9ff");
-          gradient.addColorStop(1, "#45aaff");
-        }
-
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = "#7ee7ff";
+        ctx.shadowColor = "#7ee7ff";
+        ctx.shadowBlur = 18;
         ctx.beginPath();
-        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+        ctx.arc(x, y, 7 + pulse, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.shadowBlur = 0;
         ctx.fillStyle = "#03101f";
-        ctx.font = "900 11px Arial";
+        ctx.font = "900 9px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(r.type === "FREEBET" ? "FB" : "FS", 0, -2);
-
-        ctx.font = "800 7px Arial";
-        ctx.fillText(String(r.amount), 0, 8);
-
-        ctx.restore();
+        ctx.fillText("M", x, y + 1);
       }
-    }
 
-    function drawParticles() {
-      for (const p of particles) {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.life);
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2.1, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
+      ctx.restore();
     }
+  }
+}
 
-    function drawCountdown() {
+function drawPlayer() {
+  if (!player) return;
+
+  const mouthOpen = 0.22 + Math.abs(Math.sin(player.mouth)) * 0.28;
+  let angle = 0;
+
+  if (player.dir.name === "right") angle = 0;
+  if (player.dir.name === "down") angle = Math.PI / 2;
+  if (player.dir.name === "left") angle = Math.PI;
+  if (player.dir.name === "up") angle = -Math.PI / 2;
+
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  ctx.rotate(angle);
+
+  ctx.shadowColor = "#ffe28a";
+  ctx.shadowBlur = 16;
+  ctx.fillStyle = "#ffcf4a";
+
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, player.radius + 2, mouthOpen, Math.PI * 2 - mouthOpen);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "#03101f";
+  ctx.font = "900 8px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.rotate(-angle);
+  ctx.fillText("M", 0, 1);
+
+  ctx.restore();
+}
+
+function drawGhosts() {
+  const vulnerable = Date.now() < powerUntil;
+
+  for (const g of ghosts) {
+    if (Date.now() < g.deadUntil) {
       ctx.save();
-
-      ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
-      ctx.fillRect(0, 0, W, H);
-
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      ctx.shadowColor = "#7ee7ff";
-      ctx.shadowBlur = 25;
+      ctx.globalAlpha = 0.35;
       ctx.fillStyle = "#ffffff";
-      ctx.font = countdownText === "BAŞLA!" ? "900 48px Arial" : "900 82px Arial";
-      ctx.fillText(countdownText, W / 2, H / 2 - 10);
-
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = "#9ed7ff";
-      ctx.font = "900 15px Arial";
-      ctx.fillText("Hazır ol", W / 2, H / 2 + 55);
-
-      ctx.restore();
-    }
-
-    function drawVersion() {
-      ctx.save();
-      ctx.fillStyle = "rgba(255,255,255,0.35)";
-      ctx.font = "700 8px Arial";
-      ctx.textAlign = "right";
-      ctx.fillText(CONFIG.GAME_VERSION, W - 8, H - 7);
-      ctx.restore();
-    }
-
-    function roundedRect(x, y, w, h, r) {
       ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + w - r, y);
-      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      ctx.lineTo(x + r, y + h);
-      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
+      ctx.arc(g.x, g.y, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      continue;
     }
 
-    function recordEvent(type, payload) {
-      if (!CONFIG.SHEETS_WEBAPP_URL) return;
+    ctx.save();
 
-      const data = {
-        secret: CONFIG.SHEETS_API_SECRET,
-        type,
-        game: CONFIG.GAME_NAME,
-        version: CONFIG.GAME_VERSION,
-        createdAt: new Date().toISOString(),
-        payload
-      };
+    const color = vulnerable ? "#2f74ff" : g.color;
+    const pulse = Math.sin(Date.now() / 120 + g.x) * 1.2;
 
-      try {
-        fetch(CONFIG.SHEETS_WEBAPP_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify(data)
-        }).catch(() => {});
-      } catch (e) {}
+    ctx.translate(g.x, g.y + pulse);
+
+    ctx.shadowColor = color;
+    ctx.shadowBlur = vulnerable ? 22 : 15;
+    ctx.fillStyle = color;
+
+    ctx.beginPath();
+    ctx.arc(0, -2, g.radius + 2, Math.PI, 0);
+    ctx.lineTo(g.radius + 2, g.radius + 4);
+    ctx.lineTo(g.radius / 2, g.radius);
+    ctx.lineTo(0, g.radius + 4);
+    ctx.lineTo(-g.radius / 2, g.radius);
+    ctx.lineTo(-g.radius - 2, g.radius + 4);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(-3.5, -3, 2.6, 0, Math.PI * 2);
+    ctx.arc(4.5, -3, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#03101f";
+    ctx.beginPath();
+    ctx.arc(-3, -3, 1.2, 0, Math.PI * 2);
+    ctx.arc(5, -3, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+function drawRewardDrops() {
+  for (const r of rewardDrops) {
+    ctx.save();
+
+    const pulse = Math.sin(Date.now() / 100) * 2;
+
+    ctx.translate(r.x, r.y + pulse);
+    ctx.rotate(Math.sin(r.spin) * 0.25);
+
+    ctx.shadowColor = r.type === "FREEBET" ? "#ffe28a" : "#7ee7ff";
+    ctx.shadowBlur = 22;
+
+    const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, 20);
+
+    if (r.type === "FREEBET") {
+      gradient.addColorStop(0, "#fff3ba");
+      gradient.addColorStop(1, "#ffb93d");
+    } else {
+      gradient.addColorStop(0, "#dff9ff");
+      gradient.addColorStop(1, "#45aaff");
     }
 
-    function gameLoop(now) {
-      let dt = now - lastFrameTime;
-      lastFrameTime = now;
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, 14, 0, Math.PI * 2);
+    ctx.fill();
 
-      if (!Number.isFinite(dt) || dt <= 0) dt = 16.67;
-      dt = Math.min(dt, 50);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#03101f";
+    ctx.font = "900 11px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(r.type === "FREEBET" ? "FB" : "FS", 0, -2);
 
-      if (state === "playing") {
-        updateGame(dt);
-      } else {
-        updateParticles(dt);
-      }
+    ctx.font = "800 7px Arial";
+    ctx.fillText(String(r.amount), 0, 8);
 
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
+    ctx.restore();
+  }
+}
 
-    startBtn.addEventListener("click", function(e) {
-      e.preventDefault();
+function drawParticles() {
+  for (const p of particles) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
 
-      startTitle.textContent = "Marino Maze";
-      startText.textContent = "Sarı noktaları topla. Mavi kapsülü alınca hayaletleri yakala. Hayaletlerden nadiren FS / FB kapsülü düşer. Ödülü yakalayamazsan sayılmaz.";
-      startBtn.textContent = "OYUNU BAŞLAT";
+function drawCountdown() {
+  ctx.save();
 
-      startCountdown();
-    });
+  ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
+  ctx.fillRect(0, 0, W, H);
 
-    window.addEventListener("keydown", function(event) {
-      if (event.code === "ArrowUp" || event.code === "KeyW") {
-        event.preventDefault();
-        setDirection(DIR.up);
-      }
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
 
-      if (event.code === "ArrowDown" || event.code === "KeyS") {
-        event.preventDefault();
-        setDirection(DIR.down);
-      }
+  ctx.shadowColor = "#7ee7ff";
+  ctx.shadowBlur = 25;
+  ctx.fillStyle = "#ffffff";
+  ctx.font = countdownText === "BAŞLA!" ? "900 48px Arial" : "900 82px Arial";
+  ctx.fillText(countdownText, W / 2, H / 2 - 10);
 
-      if (event.code === "ArrowLeft" || event.code === "KeyA") {
-        event.preventDefault();
-        setDirection(DIR.left);
-      }
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "#9ed7ff";
+  ctx.font = "900 15px Arial";
+  ctx.fillText("Hazır ol", W / 2, H / 2 + 55);
 
-      if (event.code === "ArrowRight" || event.code === "KeyD") {
-        event.preventDefault();
-        setDirection(DIR.right);
-      }
-    });
+  ctx.restore();
+}
 
-    document.getElementById("upBtn").addEventListener("pointerdown", e => {
-      e.preventDefault();
-      setDirection(DIR.up);
-    });
+function drawVersion() {
+  ctx.save();
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  ctx.font = "700 8px Arial";
+  ctx.textAlign = "right";
+  ctx.fillText(CONFIG.GAME_VERSION, W - 8, H - 7);
+  ctx.restore();
+}
 
-    document.getElementById("downBtn").addEventListener("pointerdown", e => {
-      e.preventDefault();
-      setDirection(DIR.down);
-    });
+function roundedRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
 
-    document.getElementById("leftBtn").addEventListener("pointerdown", e => {
-      e.preventDefault();
-      setDirection(DIR.left);
-    });
+function recordEvent(type, payload) {
+  if (!CONFIG.SHEETS_WEBAPP_URL) return;
 
-    document.getElementById("rightBtn").addEventListener("pointerdown", e => {
-      e.preventDefault();
-      setDirection(DIR.right);
-    });
+  const data = {
+    secret: CONFIG.SHEETS_API_SECRET,
+    type,
+    game: CONFIG.GAME_NAME,
+    version: CONFIG.GAME_VERSION,
+    createdAt: new Date().toISOString(),
+    payload
+  };
 
-    canvas.addEventListener("pointerdown", function(event) {
-      event.preventDefault();
+  try {
+    fetch(CONFIG.SHEETS_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(data)
+    }).catch(() => {});
+  } catch (e) {}
+}
 
-      swipeActive = true;
-      swipeStartX = event.clientX;
-      swipeStartY = event.clientY;
-    }, { passive: false });
+function gameLoop(now) {
+  let dt = now - lastFrameTime;
+  lastFrameTime = now;
 
-    canvas.addEventListener("pointermove", function(event) {
-      event.preventDefault();
+  if (!Number.isFinite(dt) || dt <= 0) dt = 16.67;
+  dt = Math.min(dt, 50);
 
-      if (!swipeActive) return;
+  if (state === "playing") {
+    updateGame(dt);
+  } else {
+    updateParticles(dt);
+  }
 
-      const dx = event.clientX - swipeStartX;
-      const dy = event.clientY - swipeStartY;
+  draw();
+  requestAnimationFrame(gameLoop);
+}
 
-      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+startBtn.addEventListener("click", function(e) {
+  e.preventDefault();
 
-      if (Math.abs(dx) > Math.abs(dy)) {
-        setDirection(dx > 0 ? DIR.right : DIR.left);
-      } else {
-        setDirection(dy > 0 ? DIR.down : DIR.up);
-      }
+  startTitle.textContent = "Marino Maze";
+  startText.textContent = "Sarı noktaları topla. Mavi kapsülü alınca hayaletleri yakala. Hayaletlerden nadiren FS / FB kapsülü düşer.";
+  startBtn.textContent = "OYUNU BAŞLAT";
 
-      swipeStartX = event.clientX;
-      swipeStartY = event.clientY;
-    }, { passive: false });
+  startCountdown();
+});
 
-    canvas.addEventListener("pointerup", function(event) {
-      event.preventDefault();
-      swipeActive = false;
-    }, { passive: false });
+window.addEventListener("keydown", function(event) {
+  if (event.code === "ArrowUp" || event.code === "KeyW") {
+    event.preventDefault();
+    setDirection(DIR.up);
+  }
 
-    canvas.addEventListener("pointercancel", function(event) {
-      event.preventDefault();
-      swipeActive = false;
-    }, { passive: false });
+  if (event.code === "ArrowDown" || event.code === "KeyS") {
+    event.preventDefault();
+    setDirection(DIR.down);
+  }
 
-    document.addEventListener("touchmove", function(event) {
-      const target = event.target;
+  if (event.code === "ArrowLeft" || event.code === "KeyA") {
+    event.preventDefault();
+    setDirection(DIR.left);
+  }
 
-      if (
-        target === canvas ||
-        target.classList.contains("ctrl") ||
-        target.closest(".gameWrap") ||
-        target.closest(".controls")
-      ) {
-        event.preventDefault();
-      }
-    }, { passive: false });
+  if (event.code === "ArrowRight" || event.code === "KeyD") {
+    event.preventDefault();
+    setDirection(DIR.right);
+  }
+});
 
-    document.addEventListener("visibilitychange", function() {
-      lastFrameTime = performance.now();
-    });
+document.getElementById("upBtn").addEventListener("pointerdown", e => {
+  e.preventDefault();
+  setDirection(DIR.up);
+});
 
-    window.addEventListener("focus", function() {
-      lastFrameTime = performance.now();
-    });
+document.getElementById("downBtn").addEventListener("pointerdown", e => {
+  e.preventDefault();
+  setDirection(DIR.down);
+});
 
-    window.addEventListener("blur", function() {
-      lastFrameTime = performance.now();
-    });
+document.getElementById("leftBtn").addEventListener("pointerdown", e => {
+  e.preventDefault();
+  setDirection(DIR.left);
+});
 
-    window.addEventListener("beforeunload", function() {
-      stopMusic();
-    });
+document.getElementById("rightBtn").addEventListener("pointerdown", e => {
+  e.preventDefault();
+  setDirection(DIR.right);
+});
 
-    resetPellets();
-    resetPositions();
-    updateHud();
-    draw();
+canvas.addEventListener("pointerdown", function(event) {
+  event.preventDefault();
 
-    requestAnimationFrame(function(now) {
-      lastFrameTime = now;
-      requestAnimationFrame(gameLoop);
-    });
-  </script>
+  swipeActive = true;
+  swipeStartX = event.clientX;
+  swipeStartY = event.clientY;
+}, { passive: false });
+
+canvas.addEventListener("pointermove", function(event) {
+  event.preventDefault();
+
+  if (!swipeActive) return;
+
+  const dx = event.clientX - swipeStartX;
+  const dy = event.clientY - swipeStartY;
+
+  if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    setDirection(dx > 0 ? DIR.right : DIR.left);
+  } else {
+    setDirection(dy > 0 ? DIR.down : DIR.up);
+  }
+
+  swipeStartX = event.clientX;
+  swipeStartY = event.clientY;
+}, { passive: false });
+
+canvas.addEventListener("pointerup", function(event) {
+  event.preventDefault();
+  swipeActive = false;
+}, { passive: false });
+
+canvas.addEventListener("pointercancel", function(event) {
+  event.preventDefault();
+  swipeActive = false;
+}, { passive: false });
+
+document.addEventListener("touchmove", function(event) {
+  const target = event.target;
+
+  if (
+    target === canvas ||
+    target.classList.contains("ctrl") ||
+    target.closest(".gameWrap") ||
+    target.closest(".controls")
+  ) {
+    event.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener("visibilitychange", function() {
+  lastFrameTime = performance.now();
+});
+
+window.addEventListener("focus", function() {
+  lastFrameTime = performance.now();
+});
+
+window.addEventListener("blur", function() {
+  lastFrameTime = performance.now();
+});
+
+window.addEventListener("beforeunload", function() {
+  stopMusic();
+});
+
+resetPellets();
+resetPositions();
+updateHud();
+draw();
+
+requestAnimationFrame(function(now) {
+  lastFrameTime = now;
+  requestAnimationFrame(gameLoop);
+});
+</script>
+
 </body>
 </html>
